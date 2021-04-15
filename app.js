@@ -5,7 +5,11 @@ let app = express()
 let bodyParser = require('body-parser')
 const path = require('path')
 
-//mysql
+// static files
+var assetsPath = path.join(__dirname, 'public');
+app.use(express.static(assetsPath));
+
+// mysql connection
 var mysql = require('mysql')
 
 var con = mysql.createConnection({
@@ -25,11 +29,11 @@ con.connect(function(err) {
   console.log('connected as id ' + con.threadId);
 });
 
-//load books
+// load books
 const BOOKLIST_FOR_SEARCH = require('./public/names.js')
 const booklist_for_search = BOOKLIST_FOR_SEARCH.booklist_for_search 
 
-//to use jquery in node
+// to use jquery in node
 var jsdom = require('jsdom')
 const { JSDOM } = jsdom
 const { window } = new JSDOM()
@@ -44,12 +48,17 @@ app.use(bodyParser.urlencoded({
 }))
 app.use(bodyParser.json())
 
-// to read env variables
+// port
 let port = process.env.PORT || 3030
 
-// default page
-app.get('/', function(req, res) {
+// tag survey page
+app.get('/booksurvey', function(req, res) {
     res.sendFile(path.join(__dirname, "/survey.html"))
+})
+
+// movie survey page
+app.get('/moviesurvey', function(req, res) {
+    res.sendFile(path.join(__dirname, "/moviesurvey.html"))
 })
 
 
@@ -80,10 +89,9 @@ app.post('/calculateTag', function(req, res) {
 	  con.query(query, [bookArray], function (err, result) {
 	    res.send(result)
 	  })
-	// res.send({max: max})
 })
 
-// submits form, I think this can be imporved
+// submits form
 app.post('/submitSurvey', function(req,res){
   const obj = req.body
   // saved the tag in a variable and removed it from the obj so that it can be iterated
@@ -95,10 +103,11 @@ app.post('/submitSurvey', function(req,res){
   for(const i in obj){
    con.query('INSERT INTO surveyresponse (name_or_turkid, title, tag, score) VALUES (?, ?, ?, ?)',[name, i, tag, obj[i]], function(err, result){
    	 if (err) {
-   	 	// res.send({success:false})
+   	 	console.log(err)
    	 }
    }) 
   }
+  // Nodejs is single threaded, this response runs before completing the for loop above, need to imporve using promise resolve
   res.send({success:true})
 })
 
