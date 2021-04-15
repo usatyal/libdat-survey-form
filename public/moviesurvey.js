@@ -24,7 +24,7 @@ $.each(movieNames, function(i) {
 $('#movieList').on('click', 'input[name="movieNames"]', function() {
   if (this.checked === true) {
     if (selectedMovies.length === 3) {
-      alert('You have already selected 6 books')
+      alert('You have already selected 3 movies')
       return false;
     }
     selectedMovies.push(this.value)
