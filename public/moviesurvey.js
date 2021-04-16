@@ -100,7 +100,7 @@ $('.selected-view, #movieListContainer').on('click', '.show-form, #notEnoughMovi
   // comment box
   $('#howLongAgo').append(`
     <div class="comment">
-      <label>Comment(if any): </label> <br>
+      <label>Any comments? </label> <br>
       <textarea rows='4' cols='50' name='comment'></textarea>
     </div>  
   `)
@@ -110,14 +110,15 @@ $('.selected-view, #movieListContainer').on('click', '.show-form, #notEnoughMovi
 // movie-tag question
 $('.fold-2').on('click', '.show-second-form', function() {
   $('.fold-2').hide()
+  $('.fold-3 h2').show()
   $('.movie-question').removeClass('bg-info').addClass('progress-bar-striped progress-bar-animated')
   $.each(selectedMovies, function(i) {
     $('#tagDegree').prepend(`
-      <h3>On a scale from 1 (not at all) to 5 (very much), how strongly does the tag <b><i>${tempTagArray[i]}</i></b> apply to the movie <b><i>${selectedMovies[i]}</i></b>. For example, the movie ${exampleSurveyTree[tempTagArray[i]].min} would have a low score, while the movie ${exampleSurveyTree[tempTagArray[i]].max} high
+      <h3>On a scale from 1 to 5, how strongly does the tag <b><i>${tempTagArray[i]}</i></b> apply to <b><i>${selectedMovies[i]}</i></b>. For example, the movie ${exampleSurveyTree[tempTagArray[i]].min} would have a low score, while the movie ${exampleSurveyTree[tempTagArray[i]].max} high
       </h3>
       <div class='form-group'>
         <label class='radio-inline'>
-          <input type='radio' name='${selectedMovies[i]}' value='1' required>1
+          <input type='radio' name='${selectedMovies[i]}' value='1' required>1 (Not at all)
         </label>
         <label class='radio-inline'>
           <input type='radio' name='${selectedMovies[i]}' value='2'>2
@@ -129,32 +130,33 @@ $('.fold-2').on('click', '.show-second-form', function() {
           <input type='radio' name='${selectedMovies[i]}' value='4'>4
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${selectedMovies[i]}' value='5'>5
+          <input type='radio' name='${selectedMovies[i]}' value='5'>5 (Very much)
         </label>
         <label class='radio-inline'>
           <input type='radio' name='${selectedMovies[i]}' value='-1'>Not sure
         </label>
       </div>
-      <h3>On a scale from 1 (not at all) to 5 (very much), how easy was it to attach the tag <b><i>${tempTagArray[i]}</i></b> to the movie <b><i>${selectedMovies[i]}</i></b>
+      <div>
+         <p> High scoring example for <b><i>${tempTagArray[i]}</i></b> is <b><i>${exampleSurveyTree[tempTagArray[i]].max}</i></b>.</p>
+         <p> Low scoring example for <b><i>${tempTagArray[i]} is <b><i>${exampleSurveyTree[tempTagArray[i]].min}</i></b>.</p>
+      </div>
+      <h3>To what degree do you agree with the statement “it was easy for me to rate the tag <b><i>${tempTagArray[i]}</i></b> of the movie <b><i>${selectedMovies[i]}</i></b> ?
       </h3>
       <div class='form-group'>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='1' required>1
+          <input type='radio' name='${tempTagArray[i]}' value='1' required> Strongly disagree
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='2'>2
+          <input type='radio' name='${tempTagArray[i]}' value='2'> Disagree
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='3'>3
+          <input type='radio' name='${tempTagArray[i]}' value='3'>Neither agree nor disagree
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='4'>4
+          <input type='radio' name='${tempTagArray[i]}' value='4'> Agree
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='5'>5
-        </label>
-        <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='-1'>Not sure
+          <input type='radio' name='${tempTagArray[i]}' value='5'> Strongly agree
         </label>
       </div>
       <hr>
@@ -164,7 +166,7 @@ $('.fold-2').on('click', '.show-second-form', function() {
   // comment box
   $('#tagDegree').append(`
     <div class="comment">
-      <label>Comment(if any): </label> <br>
+      <label>Any comments? </label> <br>
       <textarea rows='4' cols='50' name='comment'></textarea>
     </div>  
   `)
@@ -174,14 +176,15 @@ $('.fold-2').on('click', '.show-second-form', function() {
 // tag question 
 $('.fold-3').on('click', '.show-third-form', function() {
   $('.fold-3').hide()
+  $('.fold-4 h2').show()
   $('.movie-tag-question').removeClass('bg-info').addClass('progress-bar-striped progress-bar-animated')
   $.each(tempTagArray, function(i) {
     $('#tagDifficulty').prepend(`
-      <h3>On a scale from 1 (not at all) to 5 (very much), to what degree are you familiar with the meaning of the tag <b><i>${tempTagArray[i]}</i></b>
+      <h3>On a scale from 1 to 5, to what degree are you familiar with the meaning of the tag <b><i>${tempTagArray[i]}</i></b> ?
       </h3>
       <div class='form-group'>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='1' required>1
+          <input type='radio' name='${tempTagArray[i]}' value='1' required>1 (not at all)
         </label>
         <label class='radio-inline'>
           <input type='radio' name='${tempTagArray[i]}' value='2'>2
@@ -193,7 +196,7 @@ $('.fold-3').on('click', '.show-third-form', function() {
           <input type='radio' name='${tempTagArray[i]}' value='4'>4
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='5'>5
+          <input type='radio' name='${tempTagArray[i]}' value='5'>5 (very much)
         </label>
         <label class='radio-inline'>
           <input type='radio' name='${tempTagArray[i]}' value='-1'>Not sure
@@ -213,7 +216,7 @@ $('.fold-3').on('click', '.show-third-form', function() {
   // comment
   $('#tagDifficulty').append(`
     <div class="comment">
-      <label>Comment(if any): </label> <br>
+      <label>Any comments? </label> <br>
       <textarea rows='4' cols='50' name='comment'></textarea>
     </div>  
   `)
