@@ -8,22 +8,48 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
 	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+	<style type="text/css">
+		#howLongAgo label, #tagDegree label, #tagDifficulty label {
+			padding-right: 50px;
+			font-size: 16px;
+		}
+		hr {
+			height: 1px;
+			background-color: black; 
+		}
+	</style>
 </head>
 <body>
 	<div class="container" style="padding-top: 50px;">
 		<div class="progress">
-			<div class="progress-bar" role="progressbar" aria-valuenow="0"
-			aria-valuemin="0" aria-valuemax="100" style="width:0%">
+			<div class="progress-bar bg-info movie-selection" role="progressbar" style="width: 25%" aria-valuenow="15" aria-valuemin="0" aria-valuemax="100">
+				movie selection
+			</div>
+			<div class="progress-bar bg-info movie-question" role="progressbar" style="width: 25%" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">
+				movie question
+			</div>
+			<div class="progress-bar bg-info movie-tag-question" role="progressbar" style="width: 25%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+				movie-tag question
+			</div>
+			<div class="progress-bar bg-info tag-question" role="progressbar" style="width: 25%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100">
+				tag question
+			</div>
 		</div>
-	</div>
-	<div class="row fold-1">
-		<div class="col-sm-6">
+	  <div class="row fold-1">
+		<div class="col-sm-6" id="movieListContainer">
 			<form id="selectMoview">
 				<h3>Please select <b>first three</b> movies from the list</h3>
 				<div id="movieList">
 					<!-- Movie selection form -->
 				</div>
 			</form>
+			<div class="comment">
+				<label>Comment(if any): </label> <br>
+				<textarea rows='4' cols='50' name='comment'></textarea>
+			</div>
+			<button id="notEnoughMovies" class="btn btn-primary" style="display: none;">
+			  I can’t find more movies
+			</button>
 		</div>
 		<div class="col-sm-6 selected-view">
 			<h3>You have selected <span class="selectedNum">0</span> movies, please select <span class="remainingNum">3</span> movies </h3>
@@ -33,7 +59,8 @@
 			<button class="btn btn-primary show-form" style="display: none;">NEXT</button>
 		</div>
 	</div>
-	<div class="row fold-2">
+	<div class="row fold-2" style="display: none;">
+		<h2>Please indicate how long ago you watched these movies:</h2>
 		<form id="howLongAgo">
 			<!-- movie question -->
 		</form>
