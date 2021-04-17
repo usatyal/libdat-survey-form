@@ -111,6 +111,57 @@ app.post('/submitSurvey', function(req,res){
   res.send({success:true})
 })
 
+// insert movie selection
+app.post('/insertMovieSelection', function( req, res ){
+  const obj = req.body
+  con.query('INSERT INTO movieselection (TURKID, selected_movies) VALUES (?, ?)',[obj.turkID, obj.movieNames.toString()], function(err, result){
+     if (err) {
+      console.log(err)
+     }
+     res.send({UID:result.insertId})
+  })
+})
+
+// insertHowLongAgo
+app.post('/insertHowLongAgo', function( req, res ){
+  const obj = req.body
+  console.log(obj)
+  const UID  = obj.UID
+  const comment = obj.comment
+  delete obj.UID
+  delete obj.comment
+  for(const i in obj){
+   con.query('INSERT INTO moviequestion (UID, movie, how_long_ago) VALUES (?, ?, ?)',[UID, i, obj[i]], function(err, result){
+     if (err) {
+      console.log(err)
+     }
+   }) 
+  }
+})
+
+// insertMovieTagQuestion
+app.post('/insertMovieTagQuestion', function( req, res ){
+  const obj = req.body
+  // console.log(obj)
+  /*const UID  = obj.UID
+  const comment = obj.comment
+  delete obj.UID
+  delete obj.comment
+  for(const i in obj){
+   con.query('INSERT INTO moviequestion (UID, movie, how_long_ago) VALUES (?, ?, ?)',[UID, i, obj[i]], function(err, result){
+     if (err) {
+      console.log(err)
+     }
+   }) 
+  }*/
+})
+
+// tag question
+app.post('/tagQuestion', function ( req, res ){
+  const obj = req.body
+  //console.log(obj)
+})
+
 app.listen(port, function () {
-    console.log("Running book-tag-api on port " + port)
+  console.log("Running book-tag-api on port " + port)
 })

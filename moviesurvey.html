@@ -50,8 +50,12 @@
 			In this survey, we will first ask you to select movies you have watched and then answer questions about those movies and their features. This survey contains up to 50 questions that are split into 4 pages.
 		</div>
 		<div class="col-sm-6" id="movieListContainer">
-			<form id="selectMoview">
-				<h2>Please select <b>first three</b> movies from the list</h2>
+			<form id="selectMovie">
+				<div class="form-group">
+					<label>Amazon turk ID</label>
+					<input type="text" name="turkID" required>
+				</div>
+				<h2>Please select <b>first 10</b> movies from the list</h2>
 				<div id="movieList">
 					<!-- Movie selection form -->
 				</div>
@@ -60,9 +64,6 @@
 				<label>Any comments? </label> <br>
 				<textarea rows='4' cols='50' name='comment'></textarea>
 			</div>
-			<button id="notEnoughMovies" class="btn btn-primary" style="display: none;">
-			  I can’t find more movies
-			</button>
 		</div>
 		<div class="col-sm-6 selected-view">
 			<h3>You have selected <span class="selectedNum">0</span> movies, please select <span class="remainingNum">3</span> movies </h3>
