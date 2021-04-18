@@ -13,6 +13,20 @@ function randomize (movieNames) {
   return tempMovieNames
 }
 
+function removeByAttr (arr, attr, value){
+    var i = arr.length;
+    while(i--){
+       if( arr[i] 
+           && arr[i].hasOwnProperty(attr) 
+           && (arguments.length > 2 && arr[i][attr] === value ) ){ 
+
+           arr.splice(i,1);
+
+       }
+    }
+    return arr;
+}
+
 var randomMovieNames = randomize(movieNames)
 
 let selectedMovies = []
@@ -22,7 +36,7 @@ $.each(randomMovieNames, function(i) {
   $('#movieList').append(`
     <div class='checkbox'>
       <label>
-        <input type='checkbox' name='movieNames' value='${randomMovieNames[i]}'> 
+        <input type='checkbox' name='movieNames' value="${randomMovieNames[i]}"> 
         ${randomMovieNames[i]} 
       </label>
     </div>
@@ -66,8 +80,10 @@ $('#movieList').on('click', 'input[name="movieNames"]', function() {
     $.each(selectedMovies, function(i) {
       $('ul.selected-movies').append(`<li> ${selectedMovies[i].name} </li>`)
     })
+    // console.log(selectedMovies)
   } else {
-    selectedMovies.pop(this.value)
+    // selectedMovies.pop(this.value)
+    removeByAttr(selectedMovies, 'name', this.value)
     // hide the button if disselected all
     if (selectedMovies.length === 0) {
       $('#notEnoughMovies').hide()
@@ -82,6 +98,7 @@ $('#movieList').on('click', 'input[name="movieNames"]', function() {
     $.each(selectedMovies, function(i) {
       $('ul.selected-movies').append(`<li> ${selectedMovies[i].name} </li>`)
     })
+    // console.log(selectedMovies)
   }
 })
 
@@ -99,7 +116,7 @@ $('.selected-view, #movieListContainer').on('click', '.show-form, #notEnoughMovi
       type: 'post',
       data: $('form#selectMovie').serialize(),
       success: function(data) {
-        console.log(data.UID)
+        // console.log(data.UID)
         if (data) {
           localStorage.setItem("UID", data.UID)
         }
@@ -312,7 +329,7 @@ $('.fold-3').on('click', '.show-third-form', function() {
 
 // final submit
 $('.fold-4').on('click', '.show-fourth-form', function() {
-  console.log($('form#tagDifficulty').serialize())
+  // console.log($('form#tagDifficulty').serialize())
   if ($('#tagDifficulty')[0].checkValidity()) {
     $.ajax ({
       url: 'tagQuestion',
