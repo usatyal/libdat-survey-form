@@ -250,6 +250,7 @@ $('.fold-3').on('click', '.show-third-form', function() {
     const tagMovieArray = []
     $('#tagDegree .movie input[type=radio]:checked').each(function() {
      const obj = {}
+     obj['UID'] = localStorage.getItem('UID')
      obj['movie'] = this.name
      obj['score'] = this.value
      obj['tag'] = $(this).data('tag')
@@ -257,12 +258,13 @@ $('.fold-3').on('click', '.show-third-form', function() {
     })
     $('#tagDegree .tag input[type=radio]:checked').each(function() {
      const obj = {}
+     obj['UID'] = localStorage.getItem('UID')
      obj['tag'] = this.name
      obj['score'] = this.value
      obj['movie'] = $(this).data('movie')
      tagMovieArray.push(obj);
     })
-    const postData = JSON.stringify({ movieTagArray: movieTagArray, tagMovieArray: tagMovieArray })
+    const postData = JSON.stringify({ movieTagArray: movieTagArray, tagMovieArray: tagMovieArray, message: [localStorage.getItem('UID'), $('#tagDegree textarea').val()] })
     $.ajax ({
       url: 'insertMovieTagQuestion',
       type: 'post',
@@ -334,9 +336,9 @@ $('.fold-4').on('click', '.show-fourth-form', function() {
     $.ajax ({
       url: 'tagQuestion',
       type: 'post',
-      data: $('form#tagDifficulty').serialize(),
+      data: $('form#tagDifficulty').serialize()+ "&UID=" + localStorage.getItem('UID'),
       success: function(data) {
-        // success
+        alert ("Thank you for taking part in the survey")
       }
     })
   } else {

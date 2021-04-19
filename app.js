@@ -22,11 +22,11 @@ var con = mysql.createConnection({
 
 con.connect(function(err) {
   if (err) {
-    console.error('error connecting: ' + err.stack);
+    // console.error('error connecting: ' + err.stack);
     return;
   }
  
-  console.log('connected as id ' + con.threadId);
+  // console.log('connected as id ' + con.threadId);
 });
 
 // load books
@@ -114,9 +114,9 @@ app.post('/submitSurvey', function(req,res){
 // insert movie selection
 app.post('/insertMovieSelection', function( req, res ){
   const obj = req.body
-  con.query('INSERT INTO movieselection (TURKID, selected_movies) VALUES (?, ?)',[obj.turkID, obj.movieNames.toString()], function(err, result){
+  con.query('INSERT INTO movieselection (TURKID, selected_movies, comment) VALUES (?, ?, ?)',[obj.turkID, obj.movieNames.toString(), obj.comment], function(err, result){
      if (err) {
-      console.log(err)
+      // console.log(err)
      }
      res.send({UID:result.insertId})
   })
@@ -131,35 +131,59 @@ app.post('/insertHowLongAgo', function( req, res ){
   delete obj.UID
   delete obj.comment
   for(const i in obj){
-   con.query('INSERT INTO moviequestion (UID, movie, how_long_ago) VALUES (?, ?, ?)',[UID, i, obj[i]], function(err, result){
+   con.query('INSERT INTO moviequestion (UID, movie, how_long_ago, comment) VALUES (?, ?, ?, ?)',[UID, i, obj[i], comment], function(err, result){
      if (err) {
-      console.log(err)
+      // console.log(err)
      }
    }) 
   }
+  res.send({success:true})
 })
 
 // insertMovieTagQuestion
 app.post('/insertMovieTagQuestion', function( req, res ){
   const obj = req.body
-  // console.log(obj)
-  /*const UID  = obj.UID
-  const comment = obj.comment
-  delete obj.UID
-  delete obj.comment
-  for(const i in obj){
-   con.query('INSERT INTO moviequestion (UID, movie, how_long_ago) VALUES (?, ?, ?)',[UID, i, obj[i]], function(err, result){
+  console.log(obj)
+  const movieData = obj.movieTagArray
+  const tagData = obj.tagMovieArray
+  const commentData = obj.message
+  for(const i in movieData){
+   con.query('INSERT INTO movietagscore (UID, movie, tag, score) VALUES (?, ?, ?, ?)',[movieData[i].UID, movieData[i].movie, movieData[i].tag, movieData[i].score], function(err, result){
      if (err) {
-      console.log(err)
-     }
-   }) 
-  }*/
+      // console.log(err)
+    }
+  }) 
+ }
+ for(const i in tagData){
+   con.query('INSERT INTO movietagdifficulty (UID, movie, tag, score) VALUES (?, ?, ?, ?)',[tagData[i].UID, tagData[i].movie, tagData[i].tag, tagData[i].score], function(err, result){
+     if (err) {
+      // console.log(err)
+    }
+  }) 
+ }
+ con.query('INSERT INTO comment (UID, type, comment) VALUES (?, ?, ?)',[commentData[0], 'movie-tag-comment', commentData[1]], function(err, result){
+   if (err) { 
+     // console.log(err)
+   }
+ })
+ res.send({success:true})
 })
 
 // tag question
 app.post('/tagQuestion', function ( req, res ){
   const obj = req.body
-  //console.log(obj)
+  const UID  = obj.UID
+  const comment = obj.comment
+  delete obj.UID
+  delete obj.comment
+  for(const i in obj){
+   con.query('INSERT INTO tagquestion (UID, tag, score, tagdefinition, comment) VALUES (?, ?, ?, ?, ?)',[UID, i, obj[i][0], obj[i][1], comment], function(err, result){
+     if (err) {
+      // console.log(err)
+     }
+   }) 
+  }
+  res.send({success:true})
 })
 
 app.listen(port, function () {
