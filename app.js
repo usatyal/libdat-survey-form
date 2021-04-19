@@ -125,7 +125,6 @@ app.post('/insertMovieSelection', function( req, res ){
 // insertHowLongAgo
 app.post('/insertHowLongAgo', function( req, res ){
   const obj = req.body
-  console.log(obj)
   const UID  = obj.UID
   const comment = obj.comment
   delete obj.UID
@@ -143,7 +142,6 @@ app.post('/insertHowLongAgo', function( req, res ){
 // insertMovieTagQuestion
 app.post('/insertMovieTagQuestion', function( req, res ){
   const obj = req.body
-  console.log(obj)
   const movieData = obj.movieTagArray
   const tagData = obj.tagMovieArray
   const commentData = obj.message

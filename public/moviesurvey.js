@@ -13,6 +13,7 @@ function randomize (movieNames) {
   return tempMovieNames
 }
 
+// pop value from object
 function removeByAttr (arr, attr, value){
     var i = arr.length;
     while(i--){
@@ -38,6 +39,7 @@ $.each(randomMovieNames, function(i) {
       <label>
         <input type='checkbox' name='movieNames' value="${randomMovieNames[i]}"> 
         ${randomMovieNames[i]} 
+        <a href="https://www.imdb.com/title/tt0${imdbLinks[randomMovieNames[i]]}" target="_blank">See more&gt;</a>
       </label>
     </div>
   `)
@@ -64,7 +66,6 @@ $('#movieList').on('click', 'input[name="movieNames"]', function() {
     }
     selectedMovies.push(movie)
 
-
     // next button when there are three selected items
     if (selectedMovies.length === 10) {
       $('.show-form').show()
@@ -78,17 +79,22 @@ $('#movieList').on('click', 'input[name="movieNames"]', function() {
     $('.remainingNum').html(10 - selectedMovies.length)
     $('ul.selected-movies').empty()
     $.each(selectedMovies, function(i) {
-      $('ul.selected-movies').append(`<li> ${selectedMovies[i].name} </li>`)
+      $('ul.selected-movies').append(`
+        <li>
+          <a href="https://www.imdb.com/title/tt0${imdbLinks[selectedMovies[i].name]}" target="_blank"> 
+            ${selectedMovies[i].name} 
+          </a>
+        </li>
+      `)
     })
     // console.log(selectedMovies)
   } else {
-    // selectedMovies.pop(this.value)
     removeByAttr(selectedMovies, 'name', this.value)
     // hide the button if disselected all
     if (selectedMovies.length === 0) {
       $('#notEnoughMovies').hide()
     }
-    // hide the next button if less than 3 selected
+    // hide the next button if less than 10 selected
     if (selectedMovies.length < 10) {
       $('.show-form').hide()
     }
@@ -96,9 +102,14 @@ $('#movieList').on('click', 'input[name="movieNames"]', function() {
     $('.remainingNum').html(10 - selectedMovies.length)
     $('ul.selected-movies').empty()
     $.each(selectedMovies, function(i) {
-      $('ul.selected-movies').append(`<li> ${selectedMovies[i].name} </li>`)
+      $('ul.selected-movies').append(`
+        <li>
+          <a href="https://www.imdb.com/title/tt0${imdbLinks[selectedMovies[i].name]}" target="_blank"> 
+            ${selectedMovies[i].name}
+          </a>
+        </li>
+      `)
     })
-    // console.log(selectedMovies)
   }
 })
 
@@ -131,10 +142,14 @@ $('.selected-view, #movieListContainer').on('click', '.show-form, #notEnoughMovi
   $('.movie-selection').removeClass('bg-info').addClass('progress-bar-striped progress-bar-animated')
   $.each(selectedMovies, function(i) {
     $('#howLongAgo').prepend(`
-      <h3>How long ago did you watch <b><i>${selectedMovies[i].name}</i></b>?</h3>
+      <h3>How long ago did you watch 
+        <a href="https://www.imdb.com/title/tt0${imdbLinks[selectedMovies[i].name]}" target="_blank"> 
+            <b><i> ${selectedMovies[i].name}</i></b>
+          </a>?
+      </h3>
       <div class='form-group'>
           <label class='radio-inline'>
-            <input type='radio' name='${selectedMovies[i].name}' value='1' required>Within 1 year
+            <input type='radio' name='${selectedMovies[i].name}' value='1' required> Within the last 12 months
           </label>
           <label class='radio-inline'>
             <input type='radio' name='${selectedMovies[i].name}' value='1to5'>Between 1 and 5 years
@@ -154,7 +169,7 @@ $('.selected-view, #movieListContainer').on('click', '.show-form, #notEnoughMovi
   // comment box
   $('#howLongAgo').append(`
     <div class="comment">
-      <label>Any comments? </label> <br>
+      <label>Please let us know if there is anything wrong with the survey </label> <br>
       <textarea rows='4' cols='50' name='comment'></textarea>
     </div>  
   `)
@@ -178,11 +193,19 @@ $('.fold-2').on('click', '.show-second-form', function() {
     return
   }
   $('.fold-2').hide()
-  $('.fold-3 h2').show()
+  $('.fold-3 .instruction').show()
   $('.movie-question').removeClass('bg-info').addClass('progress-bar-striped progress-bar-animated')
   $.each(selectedMovies, function(i) {
     $('#tagDegree').prepend(`
-      <h3>On a scale from 1 to 5, how strongly does the tag <b><i>${selectedMovies[i].tag}</i></b> apply to <b><i>${selectedMovies[i].name}</i></b>.
+      <h3>On a scale from 1 to 5, how strongly does the tag 
+      <a href="https://www.google.com/search?q=${selectedMovies[i].tag}" target="_blank">
+        <b><i>${selectedMovies[i].tag}</i></b>
+      </a> 
+      apply to 
+      <a href="https://www.imdb.com/title/tt0${imdbLinks[selectedMovies[i].name]}" target="_blank">
+        <b><i>${selectedMovies[i].name}</i></b>
+      </a>
+      .
       </h3>
       <div class='form-group movie'>
         <label class='radio-inline'>
@@ -205,10 +228,25 @@ $('.fold-2').on('click', '.show-second-form', function() {
         </label>
       </div>
       <div>
-         <p> High scoring example for <b><i>${selectedMovies[i].tag}</i></b> is <b><i>${exampleSurveyTree[selectedMovies[i].tag].max}</i></b>.</p>
+         <p> High scoring example for 
+             <a href="https://www.google.com/search?q=${selectedMovies[i].tag}" target="_blank">
+               <b><i>${selectedMovies[i].tag}</i></b>
+             </a> 
+             is
+             <a href="https://www.imdb.com/title/tt0${imdbLinks[exampleSurveyTree[selectedMovies[i].tag].max]}" target="_blank">
+               <b><i>${exampleSurveyTree[selectedMovies[i].tag].max}</i></b>
+             </a>.
+          </p>
          <p> Low scoring example for <b><i>${selectedMovies[i].tag} is <b><i>${exampleSurveyTree[selectedMovies[i].tag].min}</i></b>.</p>
       </div>
-      <h3>To what degree do you agree with the statement “it was easy for me to rate the tag <b><i>${selectedMovies[i].tag}</i></b> of the movie <b><i>${selectedMovies[i].name}</i></b> ?
+      <h3>To what degree do you agree with the statement “it was easy for me to rate the tag 
+        <a href="https://www.google.com/search?q=${selectedMovies[i].tag}" target="_blank">
+          <b><i>${selectedMovies[i].tag}</i></b>
+        </a>  
+        of the movie
+        <a href="https://www.imdb.com/title/tt0${imdbLinks[selectedMovies[i].name]}" target="_blank">
+          <b><i>${selectedMovies[i].name}</i></b>
+        </a>?
       </h3>
       <div class='form-group tag'>
         <label class='radio-inline'>
@@ -234,7 +272,7 @@ $('.fold-2').on('click', '.show-second-form', function() {
   // comment box
   $('#tagDegree').append(`
     <div class="comment">
-      <label>Any comments? </label> <br>
+      <label>Please let us know if there is anything wrong with the survey </label> <br>
       <textarea rows='4' cols='50' name='comment'></textarea>
     </div>  
   `)
@@ -279,13 +317,41 @@ $('.fold-3').on('click', '.show-third-form', function() {
     return
   }
   $('.fold-3').hide()
-  $('.fold-4 h2').show()
+  $('.fold-4 .instruction').show()
   $('.movie-tag-question').removeClass('bg-info').addClass('progress-bar-striped progress-bar-animated')
   // get the unique tags
   let tempTagArray = [...new Set( selectedMovies.map(obj => obj.tag))]
   $.each(tempTagArray, function(i) {
     $('#tagDifficulty').prepend(`
-      <h3>On a scale from 1 to 5, to what degree are you familiar with the meaning of the tag <b><i>${tempTagArray[i]}</i></b> ?
+      <h3>On a scale from 1 to 5, how familiar are you with the term 
+      <a href="https://www.google.com/search?q=${tempTagArray[i]}" target="_blank">
+        <b><i>${tempTagArray[i]}</i></b>
+      </a> ?
+      </h3>
+      <div class='form-group'>
+        <label class='radio-inline'>
+          <input type='radio' name='${tempTagArray[i]}' value='1' required>1 (not at all)
+        </label>
+        <label class='radio-inline'>
+          <input type='radio' name='${tempTagArray[i]}' value='2'>2
+        </label>
+        <label class='radio-inline'>
+          <input type='radio' name='${tempTagArray[i]}' value='3'>3
+        </label>
+        <label class='radio-inline'>
+          <input type='radio' name='${tempTagArray[i]}' value='4'>4
+        </label>
+        <label class='radio-inline'>
+          <input type='radio' name='${tempTagArray[i]}' value='5'>5 (very much)
+        </label>
+        <label class='radio-inline'>
+          <input type='radio' name='${tempTagArray[i]}' value='-1'>Not sure
+        </label>
+      </div>
+      <h3>On a scale from 1 (never) to 5 (very often), how often do you watch movies that could be described as 
+        <a href="https://www.google.com/search?q=${tempTagArray[i]}" target="_blank">
+          <b><i>${tempTagArray[i]}</i></b>
+        </a>?
       </h3>
       <div class='form-group'>
         <label class='radio-inline'>
@@ -308,7 +374,10 @@ $('.fold-3').on('click', '.show-third-form', function() {
         </label>
       </div>
       <div class='form-group'>
-        <h3>Please write down the definition of the tag <b><i>${tempTagArray[i]}</i></b>
+        <h3>Please write down at least three terms or phrases that you associate with 
+        <a href="https://www.google.com/search?q=${tempTagArray[i]}" target="_blank">
+          <b><i>${tempTagArray[i]}</i></b>
+        </a> 
         </h3>
         <br>
         <textarea rows='4' cols='50' name='${tempTagArray[i]}' required></textarea>
@@ -321,7 +390,7 @@ $('.fold-3').on('click', '.show-third-form', function() {
   // comment
   $('#tagDifficulty').append(`
     <div class="comment">
-      <label>Any comments? </label> <br>
+      <label>Please let us know if there is anything wrong with the survey </label> <br>
       <textarea rows='4' cols='50' name='comment'></textarea>
     </div>  
   `)
