@@ -194,7 +194,7 @@ $('.fold-2').on('click', '.show-second-form', function() {
     return
   }
   $('.fold-2').hide()
-  $('.fold-3 .instruction').show()
+  $('.fold-3 .jumbotron').show()
   window.scrollTo(0, 0)
   $('.movie-question').removeClass('bg-info').addClass('progress-bar-striped progress-bar-animated')
   $.each(selectedMovies, function(i) {
@@ -239,7 +239,15 @@ $('.fold-2').on('click', '.show-second-form', function() {
                <b><i>${exampleSurveyTree[selectedMovies[i].tag].max}</i></b>
              </a>.
           </p>
-         <p> Low scoring example for <b><i>${selectedMovies[i].tag} is <b><i>${exampleSurveyTree[selectedMovies[i].tag].min}</i></b>.</p>
+          <p> Low scoring example for 
+             <a href="https://www.google.com/search?q=${selectedMovies[i].tag}" target="_blank">
+               <b><i>${selectedMovies[i].tag}</i></b>
+             </a> 
+             is
+             <a href="https://www.imdb.com/title/tt0${imdbLinks[exampleSurveyTree[selectedMovies[i].tag].min]}" target="_blank">
+               <b><i>${exampleSurveyTree[selectedMovies[i].tag].min}</i></b>
+             </a>.
+          </p>
       </div>
       <h3>To what degree do you agree with the statement “it was easy for me to rate the tag 
         <a href="https://www.google.com/search?q=${selectedMovies[i].tag}" target="_blank">
@@ -319,7 +327,7 @@ $('.fold-3').on('click', '.show-third-form', function() {
     return
   }
   $('.fold-3').hide()
-  $('.fold-4 .instruction').show()
+  $('.fold-4 .jumbotron').show()
   window.scrollTo(0, 0)
   $('.movie-tag-question').removeClass('bg-info').addClass('progress-bar-striped progress-bar-animated')
   // get the unique tags
