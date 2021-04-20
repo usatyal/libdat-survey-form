@@ -139,6 +139,7 @@ $('.selected-view, #movieListContainer').on('click', '.show-form, #notEnoughMovi
   }
   $('.fold-1').hide()
   $('.fold-2').show()
+  window.scrollTo(0, 0)
   $('.movie-selection').removeClass('bg-info').addClass('progress-bar-striped progress-bar-animated')
   $.each(selectedMovies, function(i) {
     $('#howLongAgo').prepend(`
@@ -194,6 +195,7 @@ $('.fold-2').on('click', '.show-second-form', function() {
   }
   $('.fold-2').hide()
   $('.fold-3 .instruction').show()
+  window.scrollTo(0, 0)
   $('.movie-question').removeClass('bg-info').addClass('progress-bar-striped progress-bar-animated')
   $.each(selectedMovies, function(i) {
     $('#tagDegree').prepend(`
@@ -318,6 +320,7 @@ $('.fold-3').on('click', '.show-third-form', function() {
   }
   $('.fold-3').hide()
   $('.fold-4 .instruction').show()
+  window.scrollTo(0, 0)
   $('.movie-tag-question').removeClass('bg-info').addClass('progress-bar-striped progress-bar-animated')
   // get the unique tags
   let tempTagArray = [...new Set( selectedMovies.map(obj => obj.tag))]
