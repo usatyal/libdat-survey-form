@@ -170,18 +170,46 @@ app.post('/insertMovieTagQuestion', function( req, res ){
 // tag question
 app.post('/tagQuestion', function ( req, res ){
   const obj = req.body
-  const UID  = obj.UID
-  const comment = obj.comment
-  delete obj.UID
-  delete obj.comment
-  for(const i in obj){
-   con.query('INSERT INTO tagquestion (UID, tag, score, tagdefinition, comment) VALUES (?, ?, ?, ?, ?)',[UID, i, obj[i][0], obj[i][1], comment], function(err, result){
+  const howOftenData = obj.howOftenArray
+  const tagDefinitionData = obj.tagDefinitionArray
+  const tagFamilarityData = obj.tagFamilarityArray
+  const messageData = obj.message
+  // insert familarity value
+  for(const i in tagFamilarityData){
+   con.query('INSERT INTO tagquestion (UID, tag, tagfamilarity) VALUES (?, ?, ?)',[tagFamilarityData[i].UID, tagFamilarityData[i].tagname, tagFamilarityData[i].tagfamilarity], function(err, result){
      if (err) {
-      // console.log(err)
-     }
-   }) 
-  }
-  res.send({success:true})
+      console.log(err)
+    }
+  }) 
+ }
+
+// update the same table with how often value
+for(const i in howOftenData){
+   con.query('UPDATE tagquestion SET howoften = ? WHERE UID = ? AND tag = ?',[howOftenData[i].tagHowOftenValue, howOftenData[i].UID, howOftenData[i].tagname], function(err, result){
+     if (err) {
+      console.log(err)
+    }
+  }) 
+ }
+ 
+ // update the same table with tag definition value
+ for(const i in tagDefinitionData){
+   con.query('UPDATE tagquestion SET tagdefinition = ? WHERE UID = ? AND tag = ?',[tagDefinitionData[i].tagDefinition, tagDefinitionData[i].UID, tagDefinitionData[i].tagname], function(err, result){
+     if (err) {
+      console.log(err)
+    }
+  }) 
+ }
+
+ // comment
+ con.query('INSERT INTO comment (UID, type, comment) VALUES (?, ?, ?)',[messageData[0], 'tag-question-comment', messageData[1]], function(err, result){
+   if (err) { 
+     console.log(err)
+   }
+ })
+
+ // console.log(obj)
+ res.send({success:true})
 })
 
 app.listen(port, function () {

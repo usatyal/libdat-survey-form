@@ -331,7 +331,7 @@ $('.fold-3').on('click', '.show-third-form', function() {
         <b><i>${tempTagArray[i]}</i></b>
       </a> ?
       </h3>
-      <div class='form-group'>
+      <div class='form-group familiar'>
         <label class='radio-inline'>
           <input type='radio' name='${tempTagArray[i]}' value='1' required>1 (not at all)
         </label>
@@ -356,24 +356,24 @@ $('.fold-3').on('click', '.show-third-form', function() {
           <b><i>${tempTagArray[i]}</i></b>
         </a>?
       </h3>
-      <div class='form-group'>
+      <div class='form-group how-often'>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='1' required>1 (not at all)
+          <input type='radio' data-name='${tempTagArray[i]}' value='1' required>1 (not at all)
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='2'>2
+          <input type='radio' data-name='${tempTagArray[i]}' value='2'>2
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='3'>3
+          <input type='radio' data-name='${tempTagArray[i]}' value='3'>3
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='4'>4
+          <input type='radio' data-name='${tempTagArray[i]}' value='4'>4
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='5'>5 (very much)
+          <input type='radio' data-name='${tempTagArray[i]}' value='5'>5 (very much)
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='-1'>Not sure
+          <input type='radio' data-name='${tempTagArray[i]}' value='-1'>Not sure
         </label>
       </div>
       <div class='form-group'>
@@ -403,12 +403,38 @@ $('.fold-3').on('click', '.show-third-form', function() {
 
 // final submit
 $('.fold-4').on('click', '.show-fourth-form', function() {
-  // console.log($('form#tagDifficulty').serialize())
+  const tagFamilarityArray = []
+  const howOftenArray = []
+  const tagDefinitionArray = []
+  $('#tagDifficulty .familiar input[type=radio]:checked').each(function() {
+     const obj = {}
+     obj['UID'] = localStorage.getItem('UID')
+     obj['tagname'] = this.name
+     obj['tagfamilarity'] = this.value
+     tagFamilarityArray.push(obj);
+  })
+  $('#tagDifficulty .how-often input[type=radio]:checked').each(function() {
+     const obj = {}
+     obj['UID'] = localStorage.getItem('UID')
+     obj['tagname'] = $(this).data('name')
+     obj['tagHowOftenValue'] = this.value
+     howOftenArray.push(obj);
+  })
+  $('#tagDifficulty textarea').each(function() {
+     const obj = {}
+     obj['UID'] = localStorage.getItem('UID')
+     obj['tagname'] = this.name
+     obj['tagDefinition'] = this.value
+     tagDefinitionArray.push(obj);
+  })   
+  const postData = JSON.stringify({ tagFamilarityArray: tagFamilarityArray, howOftenArray: howOftenArray, tagDefinitionArray: tagDefinitionArray, message: [localStorage.getItem('UID'), $('#tagDifficulty textarea[name=comment]').val()] })
+  console.log(postData)
   if ($('#tagDifficulty')[0].checkValidity()) {
     $.ajax ({
       url: 'tagQuestion',
       type: 'post',
-      data: $('form#tagDifficulty').serialize()+ "&UID=" + localStorage.getItem('UID'),
+      contentType: 'application/json',
+      data: postData,
       success: function(data) {
         alert ("Thank you for taking part in the survey")
       }
