@@ -78,10 +78,8 @@
       </div>
       <div class="row fold-2" style="display: none;">
         <div class="jumbotron">
-        	Instructions: Please indicate how long ago you watched each of the previously selected movies. <br>
-					For each of the movies previously selected:<br>
-					(1) rate how well each tag applies to that movie on a scale of 1 (not at all) to 5 (very much) and <br>
-					(2) how easy it was for you to rate the movie with this tag.
+        	<b>Instructions:</b>
+          <br>Please indicate how long ago you watched each of the previously selected movies.
         </div>
         <form id="howLongAgo">
           <!-- movie question -->
@@ -89,7 +87,12 @@
         <button class="btn btn-primary show-second-form" style="display: none;">NEXT</button>
       </div>
       <div class="row fold-3">
-        <div class = "jumbotron" style="display: none;">Instructions: We are interested in how well tags, such as "action", "good acting", etc., apply to different movies and how difficult it is for people to provide these ratings.</div>
+        <div class = "jumbotron" style="display: none;"><b>Instructions:</b>
+          <br>We are interested in how well tags, such as "action", "good acting", etc., apply to different movies and how difficult it is for people to provide these ratings.
+          For each of the movies previously selected:<br>
+					(1) rate how well each tag applies to that movie on a scale of 1 (not at all) to 5 (very much) and <br>
+					(2) how easy it was for you to rate the movie with this tag.
+        </div>
         <form id="tagDegree">
           <!-- movie tag question -->
         </form>
@@ -97,7 +100,8 @@
       </div>
       <div class="row fold-4">
         <div class="jumbotron" style="display: none;">
-        	Instructions: We would like to know more information about your understanding of the tags shown to you in the previous questions.
+        	<b>Instructions:</b>
+          <br>We would like to know more information about your understanding of the tags shown to you in the previous questions.
         </div>
         <form id="tagDifficulty">
           <!-- tag question -->
@@ -106,9 +110,9 @@
       </div>
     </div>
     <!-- js files in order -->
-    <script src="example_survey_tree.js"></script>
-    <script src="surveytree.js"></script>
-    <script src="imdblink.js"></script>
-    <script src="moviesurvey.js"></script>
+    <script src="public/example_survey_tree.js"></script>
+    <script src="public/surveytree.js"></script>
+    <script src="public/imdblink.js"></script>
+    <script src="public/moviesurvey.js"></script>
   </body>
 </html>
