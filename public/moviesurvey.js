@@ -382,7 +382,7 @@ $('.fold-3').on('click', '.show-third-form', function() {
           <input type='radio' name='${tempTagArray[i]}' value='-1'>Not sure
         </label>
       </div>
-      <h3>On a scale from 1 (never) to 5 (very often), how often do you watch movies that could be described as 
+      <h3>On a scale from 1 to 5, how often do you watch movies that could be described as 
         <a href="https://www.google.com/search?q=${tempTagArray[i]}" target="_blank">
           <b><i>${tempTagArray[i]}</i></b>
         </a>?
