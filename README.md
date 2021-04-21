@@ -1,6 +1,6 @@
 # libdat-survey-form
 This is a survey form for book tags evaluation for the libdat project (Åbo Akademi). 
-Tags table is algorithm genereted. 
+for-comment-only
 The survey can be tested from (http://recommendabook.me:3030/). 
 This is write once and forget type of project. 
 

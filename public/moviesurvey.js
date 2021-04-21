@@ -1,5 +1,11 @@
 // moviesurvey.js
 
+MOVIE_NUMBER = 10
+
+function showValidationError(){
+  alert("Please check all the fields")
+}
+
 // movie and tag names
 let movieNames = Object.keys(surveyTree)
 
@@ -54,8 +60,8 @@ $('#movieList').append(`
 $('#movieList').on('click', 'input[name="movieNames"]', function() {
   const movie = {}
   if (this.checked === true) {
-    if (selectedMovies.length === 10) {
-      alert('You have already selected 10 movies')
+    if (selectedMovies.length === MOVIE_NUMBER) {
+      alert('You have already selected ' + MOVIE_NUMBER + ' movies')
       return false;
     }
     movie['name'] = this.value
@@ -67,7 +73,7 @@ $('#movieList').on('click', 'input[name="movieNames"]', function() {
     selectedMovies.push(movie)
 
     // next button when there are three selected items
-    if (selectedMovies.length === 10) {
+    if (selectedMovies.length === MOVIE_NUMBER) {
       $('.show-form').show()
     }
 
@@ -76,7 +82,7 @@ $('#movieList').on('click', 'input[name="movieNames"]', function() {
       $('#notEnoughMovies').show()
     }
     $('.selectedNum').html(selectedMovies.length)
-    $('.remainingNum').html(10 - selectedMovies.length)
+    $('.remainingNum').html(MOVIE_NUMBER - selectedMovies.length)
     $('ul.selected-movies').empty()
     $.each(selectedMovies, function(i) {
       $('ul.selected-movies').append(`
@@ -94,12 +100,12 @@ $('#movieList').on('click', 'input[name="movieNames"]', function() {
     if (selectedMovies.length === 0) {
       $('#notEnoughMovies').hide()
     }
-    // hide the next button if less than 10 selected
-    if (selectedMovies.length < 10) {
+    // hide the next button if less than needed selected
+    if (selectedMovies.length < MOVIE_NUMBER) {
       $('.show-form').hide()
     }
     $('.selectedNum').html(selectedMovies.length)
-    $('.remainingNum').html(10 - selectedMovies.length)
+    $('.remainingNum').html(MOVIE_NUMBER - selectedMovies.length)
     $('ul.selected-movies').empty()
     $.each(selectedMovies, function(i) {
       $('ul.selected-movies').append(`
@@ -134,7 +140,7 @@ $('.selected-view, #movieListContainer').on('click', '.show-form, #notEnoughMovi
       }
     })
   } else {
-    alert ("Please check the mandatory fields")
+    showValidationError()
     return
   }
   $('.fold-1').hide()
@@ -190,7 +196,7 @@ $('.fold-2').on('click', '.show-second-form', function() {
       }
     })
   } else {
-    alert ("Please check the mandatory fields")
+    showValidationError()
     return
   }
   $('.fold-2').hide()
@@ -207,7 +213,7 @@ $('.fold-2').on('click', '.show-second-form', function() {
       <a href="https://www.imdb.com/title/tt0${imdbLinks[selectedMovies[i].name]}" target="_blank">
         <b><i>${selectedMovies[i].name}</i></b>
       </a>
-      .
+      ?
       </h3>
       <div class='form-group movie'>
         <label class='radio-inline'>
@@ -323,7 +329,7 @@ $('.fold-3').on('click', '.show-third-form', function() {
       }
     })
   } else {
-    alert ("Please check the mandatory fields")
+    showValidationError()
     return
   }
   $('.fold-3').hide()
@@ -448,7 +454,7 @@ $('.fold-4').on('click', '.show-fourth-form', function() {
       }
     })
   } else {
-    alert ("Please check the mandatory fields")
+    showValidationError()
     return
   }
   $('.tag-question').removeClass('bg-info').addClass('progress-bar-striped progress-bar-animated')
