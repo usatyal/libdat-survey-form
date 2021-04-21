@@ -2,8 +2,21 @@
 
 MOVIE_NUMBER = 10
 
+var turkID  = ''
+
 function showValidationError(){
   alert("Please check all the fields")
+}
+
+// imdb link
+function generateImdbLink (item) {
+  if(imdbLinks[item] > 100000 && imdbLinks[item] !== 'undefined') {
+    return 'https://www.imdb.com/title/tt0'+ imdbLinks[item]
+  } else if (imdbLinks[item] <= 100000 && imdbLinks[item] !== 'undefined') {
+    return 'https://www.imdb.com/title/tt00'+ imdbLinks[item] 
+  } else {
+    return 'https://www.imdb.com/title/tt00'
+  }
 }
 
 // movie and tag names
@@ -45,7 +58,7 @@ $.each(randomMovieNames, function(i) {
       <label>
         <input type='checkbox' name='movieNames' value="${randomMovieNames[i]}"> 
         ${randomMovieNames[i]} 
-        <a href="https://www.imdb.com/title/tt0${imdbLinks[randomMovieNames[i]]}" target="_blank">See more&gt;</a>
+        <a href="${generateImdbLink(randomMovieNames[i])}" target="_blank">See more&gt;</a>
       </label>
     </div>
   `)
@@ -87,7 +100,7 @@ $('#movieList').on('click', 'input[name="movieNames"]', function() {
     $.each(selectedMovies, function(i) {
       $('ul.selected-movies').append(`
         <li>
-          <a href="https://www.imdb.com/title/tt0${imdbLinks[selectedMovies[i].name]}" target="_blank"> 
+          <a href="${generateImdbLink(selectedMovies[i].name)}" target="_blank"> 
             ${selectedMovies[i].name} 
           </a>
         </li>
@@ -110,7 +123,7 @@ $('#movieList').on('click', 'input[name="movieNames"]', function() {
     $.each(selectedMovies, function(i) {
       $('ul.selected-movies').append(`
         <li>
-          <a href="https://www.imdb.com/title/tt0${imdbLinks[selectedMovies[i].name]}" target="_blank"> 
+          <a href="${generateImdbLink(selectedMovies[i].name)}" target="_blank"> 
             ${selectedMovies[i].name}
           </a>
         </li>
@@ -122,65 +135,69 @@ $('#movieList').on('click', 'input[name="movieNames"]', function() {
 // movie question
 $('.selected-view, #movieListContainer').on('click', '.show-form, #notEnoughMovies', function() {
   // ajax request to send initial movie selection
-  // check fake tag 
-  if((selectedMovies.map(a => a.tag)).includes('fakeMovie')) {
-   alert('You selected fake movie')
-   return
-  }
   if ($('#selectMovie')[0].checkValidity()) {
+    turkID = $('input[name="turkID"]').val()
     $.ajax ({
       url: 'insertMovieSelection',
       type: 'post',
       data: $('form#selectMovie').serialize(),
-      success: function(data) {
-        // console.log(data.UID)
+      success: function(data) {    
         if (data) {
           localStorage.setItem("UID", data.UID)
+          
+          // check fake tag 
+          if((selectedMovies.map(a => a.tag)).includes('fakeMovie')) {
+            alert('You selected fake movie')
+            return
+          }
+
+          // if fake check passes, then only show this
+          $('.fold-1').hide()
+          $('.fold-2').show()
+          window.scrollTo(0, 0)
+          $('.movie-selection').removeClass('bg-info').addClass('progress-bar-striped progress-bar-animated')
+          $.each(selectedMovies, function(i) {
+            $('#howLongAgo').prepend(`
+              <h3>How long ago did you watch 
+                <a href="${generateImdbLink(selectedMovies[i].name)}" target="_blank"> 
+                    <b><i> ${selectedMovies[i].name}</i></b>
+                  </a>?
+              </h3>
+              <div class='form-group'>
+                  <label class='radio-inline'>
+                    <input type='radio' name='${selectedMovies[i].name}' value='1' required> Within the last 12 months
+                  </label>
+                  <label class='radio-inline'>
+                    <input type='radio' name='${selectedMovies[i].name}' value='1to5'>Between 1 and 5 years
+                  </label>
+                  <label class='radio-inline'>
+                    <input type='radio' name='${selectedMovies[i].name}' value='6to10'>Between 6 and 10 years
+                  </label>
+                  <label class='radio-inline'>
+                    <input type='radio' name='${selectedMovies[i].name}' value='gt10'>More than 10 years
+                  </label>
+                  <label class='radio-inline'>
+                    <input type='radio' name='${selectedMovies[i].name}' value='-1'>I do not remember
+                  </label>
+              </div>
+            `)
+          })
+          // comment box
+          $('#howLongAgo').append(`
+            <div class="comment">
+              <label>Please let us know if there is anything wrong with the survey </label> <br>
+              <textarea rows='4' cols='50' name='comment'></textarea>
+            </div>  
+          `)
+          $('.show-second-form').show()
         }
+
       }
     })
   } else {
     showValidationError()
     return
   }
-  $('.fold-1').hide()
-  $('.fold-2').show()
-  window.scrollTo(0, 0)
-  $('.movie-selection').removeClass('bg-info').addClass('progress-bar-striped progress-bar-animated')
-  $.each(selectedMovies, function(i) {
-    $('#howLongAgo').prepend(`
-      <h3>How long ago did you watch 
-        <a href="https://www.imdb.com/title/tt0${imdbLinks[selectedMovies[i].name]}" target="_blank"> 
-            <b><i> ${selectedMovies[i].name}</i></b>
-          </a>?
-      </h3>
-      <div class='form-group'>
-          <label class='radio-inline'>
-            <input type='radio' name='${selectedMovies[i].name}' value='1' required> Within the last 12 months
-          </label>
-          <label class='radio-inline'>
-            <input type='radio' name='${selectedMovies[i].name}' value='1to5'>Between 1 and 5 years
-          </label>
-          <label class='radio-inline'>
-            <input type='radio' name='${selectedMovies[i].name}' value='6to10'>Between 6 and 10 years
-          </label>
-          <label class='radio-inline'>
-            <input type='radio' name='${selectedMovies[i].name}' value='gt10'>More than 10 years
-          </label>
-          <label class='radio-inline'>
-            <input type='radio' name='${selectedMovies[i].name}' value='-1'>I do not remember
-          </label>
-      </div>
-    `)
-  })
-  // comment box
-  $('#howLongAgo').append(`
-    <div class="comment">
-      <label>Please let us know if there is anything wrong with the survey </label> <br>
-      <textarea rows='4' cols='50' name='comment'></textarea>
-    </div>  
-  `)
-  $('.show-second-form').show()
 })
 
 // movie-tag question
@@ -210,7 +227,7 @@ $('.fold-2').on('click', '.show-second-form', function() {
         <b><i>${selectedMovies[i].tag}</i></b>
       </a> 
       apply to 
-      <a href="https://www.imdb.com/title/tt0${imdbLinks[selectedMovies[i].name]}" target="_blank">
+      <a href="${generateImdbLink(selectedMovies[i].name)}" target="_blank">
         <b><i>${selectedMovies[i].name}</i></b>
       </a>
       ?
@@ -241,7 +258,7 @@ $('.fold-2').on('click', '.show-second-form', function() {
                <b><i>${selectedMovies[i].tag}</i></b>
              </a> 
              is
-             <a href="https://www.imdb.com/title/tt0${imdbLinks[exampleSurveyTree[selectedMovies[i].tag].max]}" target="_blank">
+             <a href="${generateImdbLink(exampleSurveyTree[selectedMovies[i].tag].max)}" target="_blank">
                <b><i>${exampleSurveyTree[selectedMovies[i].tag].max}</i></b>
              </a>.
           </p>
@@ -250,7 +267,7 @@ $('.fold-2').on('click', '.show-second-form', function() {
                <b><i>${selectedMovies[i].tag}</i></b>
              </a> 
              is
-             <a href="https://www.imdb.com/title/tt0${imdbLinks[exampleSurveyTree[selectedMovies[i].tag].min]}" target="_blank">
+             <a href="${generateImdbLink(exampleSurveyTree[selectedMovies[i].tag].min)}" target="_blank">
                <b><i>${exampleSurveyTree[selectedMovies[i].tag].min}</i></b>
              </a>.
           </p>
@@ -260,7 +277,7 @@ $('.fold-2').on('click', '.show-second-form', function() {
           <b><i>${selectedMovies[i].tag}</i></b>
         </a>  
         of the movie
-        <a href="https://www.imdb.com/title/tt0${imdbLinks[selectedMovies[i].name]}" target="_blank">
+        <a href="${generateImdbLink(selectedMovies[i].name)}" target="_blank">
           <b><i>${selectedMovies[i].name}</i></b>
         </a>?
       </h3>
@@ -372,7 +389,7 @@ $('.fold-3').on('click', '.show-third-form', function() {
       </h3>
       <div class='form-group how-often'>
         <label class='radio-inline'>
-          <input type='radio' data-name='${tempTagArray[i]}' value='1' required>1 (not at all)
+          <input type='radio' data-name='${tempTagArray[i]}' value='1' required>1 (never)
         </label>
         <label class='radio-inline'>
           <input type='radio' data-name='${tempTagArray[i]}' value='2'>2
@@ -384,7 +401,7 @@ $('.fold-3').on('click', '.show-third-form', function() {
           <input type='radio' data-name='${tempTagArray[i]}' value='4'>4
         </label>
         <label class='radio-inline'>
-          <input type='radio' data-name='${tempTagArray[i]}' value='5'>5 (very much)
+          <input type='radio' data-name='${tempTagArray[i]}' value='5'>5 (very often)
         </label>
         <label class='radio-inline'>
           <input type='radio' data-name='${tempTagArray[i]}' value='-1'>Not sure
@@ -442,7 +459,7 @@ $('.fold-4').on('click', '.show-fourth-form', function() {
      tagDefinitionArray.push(obj);
   })   
   const postData = JSON.stringify({ tagFamilarityArray: tagFamilarityArray, howOftenArray: howOftenArray, tagDefinitionArray: tagDefinitionArray, message: [localStorage.getItem('UID'), $('#tagDifficulty textarea[name=comment]').val()] })
-  console.log(postData)
+  // console.log(postData)
   if ($('#tagDifficulty')[0].checkValidity()) {
     $.ajax ({
       url: 'tagQuestion',
@@ -450,7 +467,8 @@ $('.fold-4').on('click', '.show-fourth-form', function() {
       contentType: 'application/json',
       data: postData,
       success: function(data) {
-        alert ("Thank you for taking part in the survey")
+        $('.fold-4').hide()
+        $('.container').html(`Thank you for taking part in the survey. Your unique id is <b><i> ${localStorage.getItem('UID')+turkID} </i></b>`)
       }
     })
   } else {

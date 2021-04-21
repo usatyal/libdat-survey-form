@@ -114,9 +114,15 @@ app.post('/submitSurvey', function(req,res){
 // insert movie selection
 app.post('/insertMovieSelection', function( req, res ){
   const obj = req.body
-  con.query('INSERT INTO movieselection (TURKID, selected_movies, comment) VALUES (?, ?, ?)',[obj.turkID, obj.movieNames.toString(), obj.comment], function(err, result){
+  let selectedFakeMovie = 0
+  // handling each seperately so that when obj.movieNames is not array, it won't throw error
+  if (obj.movieNames.includes('Dad, I am back 2 (1992)') || obj.movieNames.includes('Loose Limbs 5 (1998)') || obj.movieNames.includes('Operation Ringlet (2001)')) {
+    selectedFakeMovie = 1
+  }
+  // console.log(selectedFakeMovie)
+  con.query('INSERT INTO movieselection (TURKID, selected_movies, comment, selected_fake_movie) VALUES (?, ?, ?, ?)',[obj.turkID, obj.movieNames.toString(), obj.comment, selectedFakeMovie], function(err, result){
      if (err) {
-      // console.log(err)
+      console.log(err)
      }
      res.send({UID:result.insertId})
   })
