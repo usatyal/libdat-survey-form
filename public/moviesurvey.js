@@ -389,22 +389,22 @@ $('.fold-3').on('click', '.show-third-form', function() {
       </h3>
       <div class='form-group how-often'>
         <label class='radio-inline'>
-          <input type='radio' data-name='${tempTagArray[i]}' value='1' required>1 (never)
+          <input type='radio' name='how_often_${tempTagArray[i]}' data-name='${tempTagArray[i]}' value='1' required>1 (never)
         </label>
         <label class='radio-inline'>
-          <input type='radio' data-name='${tempTagArray[i]}' value='2'>2
+          <input type='radio' name='how_often_${tempTagArray[i]}' data-name='${tempTagArray[i]}' value='2'>2
         </label>
         <label class='radio-inline'>
-          <input type='radio' data-name='${tempTagArray[i]}' value='3'>3
+          <input type='radio' name='how_often_${tempTagArray[i]}' data-name='${tempTagArray[i]}' value='3'>3
         </label>
         <label class='radio-inline'>
-          <input type='radio' data-name='${tempTagArray[i]}' value='4'>4
+          <input type='radio' name='how_often_${tempTagArray[i]}' data-name='${tempTagArray[i]}' value='4'>4
         </label>
         <label class='radio-inline'>
-          <input type='radio' data-name='${tempTagArray[i]}' value='5'>5 (very often)
+          <input type='radio' name='how_often_${tempTagArray[i]}' data-name='${tempTagArray[i]}' value='5'>5 (very often)
         </label>
         <label class='radio-inline'>
-          <input type='radio' data-name='${tempTagArray[i]}' value='-1'>Not sure
+          <input type='radio' name='how_often_${tempTagArray[i]}' data-name='${tempTagArray[i]}' value='-1'>Not sure
         </label>
       </div>
       <div class='form-group'>
