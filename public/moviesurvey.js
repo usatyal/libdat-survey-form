@@ -23,13 +23,33 @@ function generateImdbLink (item) {
 let movieNames = Object.keys(surveyTree)
 
 // sort movies randomly and insert fake movies
+function shuffle(array) {
+  var current = array.length;
+  while (current !== 0) {
+    // picking a random element
+    rndIndex = Math.floor(Math.random() * current);
+    current -= 1;
+
+    // swapping it with the current one
+    tmp = array[current];
+    array[current] = array[rndIndex];
+    array[rndIndex] = tmp;
+  }
+}
+
 var fakeMovies = ['Dad, I am back 2 (1992)', 'Loose Limbs 5 (1998)', 'Operation Ringlet (2001)']
-function randomize (movieNames) {
-  const tempMovieNames = movieNames.sort(() => Math.random() - Math.random())
-  tempMovieNames.splice(1, 0, fakeMovies[0])
-  tempMovieNames.splice(3, 0, fakeMovies[1])
-  tempMovieNames.splice(6, 0, fakeMovies[2])
-  return tempMovieNames
+
+function prepareRandomMovieNames(surveyTree) {
+  movieNames = Object.keys(surveyTree)
+  array = []
+  for(i = 0; i < movieNames.length; i++) {
+    array.push(movieNames[i])
+  }
+  shuffle(array)
+  array.splice(1, 0, fakeMovies[0])
+  array.splice(3, 0, fakeMovies[1])
+  array.splice(6, 0, fakeMovies[2])
+  return array
 }
 
 // pop value from object
@@ -47,7 +67,7 @@ function removeByAttr (arr, attr, value){
     return arr;
 }
 
-var randomMovieNames = randomize(movieNames)
+var randomMovieNames = prepareRandomMovieNames(surveyTree)
 
 let selectedMovies = []
 
