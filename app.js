@@ -200,7 +200,7 @@ for(const i in howOftenData){
  
  // update the same table with tag definition value
  for(const i in tagDefinitionData){
-   con.query('UPDATE tagquestion SET tagdefinition = ? WHERE UID = ? AND tag = ?',[tagDefinitionData[i].tagDefinition, tagDefinitionData[i].UID, tagDefinitionData[i].tagname], function(err, result){
+   con.query('INSERT INTO tagdefinition (UID, tagname, tagdefinition) VALUES (?, ?, ?)',[tagDefinitionData[i].UID, tagDefinitionData[i].tagname, tagDefinitionData[i].tagDefinition], function(err, result){
      if (err) {
       console.log(err)
     }

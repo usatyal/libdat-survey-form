@@ -407,14 +407,16 @@ $('.fold-3').on('click', '.show-third-form', function() {
           <input type='radio' name='how_often_${tempTagArray[i]}' data-name='${tempTagArray[i]}' value='-1'>Not sure
         </label>
       </div>
-      <div class='form-group'>
-        <h3>Please write down at least three terms or phrases that you associate with 
+      <div class='form-group tag_definition'>
+        <h3>Please write down three terms or phrases that you associate with 
         <a href="https://www.google.com/search?q=${tempTagArray[i]}" target="_blank">
           <b><i>${tempTagArray[i]}</i></b>
         </a> 
         </h3>
         <br>
-        <textarea rows='4' cols='50' name='${tempTagArray[i]}' required></textarea>
+        <input type='text' data-name='${tempTagArray[i]}' required>
+        <input type='text' data-name='${tempTagArray[i]}' required>
+        <input type='text' data-name='${tempTagArray[i]}' required>
       </div>
       <hr>
       <br>
@@ -451,12 +453,14 @@ $('.fold-4').on('click', '.show-fourth-form', function() {
      obj['tagHowOftenValue'] = this.value
      howOftenArray.push(obj);
   })
-  $('#tagDifficulty textarea').each(function() {
+  $('#tagDifficulty .tag_definition input').each(function() {
      const obj = {}
      obj['UID'] = localStorage.getItem('UID')
-     obj['tagname'] = this.name
+     obj['tagname'] = $(this).data('name')
      obj['tagDefinition'] = this.value
      tagDefinitionArray.push(obj);
+     console.log(obj)
+     console.log(tagDefinitionArray)
   })   
   const postData = JSON.stringify({ tagFamilarityArray: tagFamilarityArray, howOftenArray: howOftenArray, tagDefinitionArray: tagDefinitionArray, message: [localStorage.getItem('UID'), $('#tagDifficulty textarea[name=comment]').val()] })
   // console.log(postData)
