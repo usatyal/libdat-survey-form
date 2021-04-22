@@ -434,9 +434,9 @@ $('.fold-3').on('click', '.show-third-form', function() {
         </a> 
         </h3>
         <br>
-        <input type='text' data-name='${tempTagArray[i]}' required>
-        <input type='text' data-name='${tempTagArray[i]}' required>
-        <input type='text' data-name='${tempTagArray[i]}' required>
+        <input type='text' data-order="first" data-name='${tempTagArray[i]}' required>
+        <input type='text' data-order="second" data-name='${tempTagArray[i]}' required>
+        <input type='text' data-order='third' data-name='${tempTagArray[i]}' required>
       </div>
       <hr>
       <br>
@@ -477,6 +477,7 @@ $('.fold-4').on('click', '.show-fourth-form', function() {
      const obj = {}
      obj['UID'] = localStorage.getItem('UID')
      obj['tagname'] = $(this).data('name')
+     obj['ordervalue'] = $(this).data('order')
      obj['tagDefinition'] = this.value
      tagDefinitionArray.push(obj);
      console.log(obj)
