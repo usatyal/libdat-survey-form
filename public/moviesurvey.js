@@ -185,19 +185,19 @@ $('.selected-view, #movieListContainer').on('click', '.show-form, #notEnoughMovi
               </h3>
               <div class='form-group'>
                   <label class='radio-inline'>
-                    <input type='radio' name='${selectedMovies[i].name}' value='1' required> Within the last 12 months
+                    <input type='radio' name="${selectedMovies[i].name}" value='1' required> Within the last 12 months
                   </label>
                   <label class='radio-inline'>
-                    <input type='radio' name='${selectedMovies[i].name}' value='1to5'>Between 1 and 5 years
+                    <input type='radio' name="${selectedMovies[i].name}" value='1to5'>Between 1 and 5 years
                   </label>
                   <label class='radio-inline'>
-                    <input type='radio' name='${selectedMovies[i].name}' value='6to10'>Between 6 and 10 years
+                    <input type='radio' name="${selectedMovies[i].name}" value='6to10'>Between 6 and 10 years
                   </label>
                   <label class='radio-inline'>
-                    <input type='radio' name='${selectedMovies[i].name}' value='gt10'>More than 10 years
+                    <input type='radio' name="${selectedMovies[i].name}" value='gt10'>More than 10 years
                   </label>
                   <label class='radio-inline'>
-                    <input type='radio' name='${selectedMovies[i].name}' value='-1'>I do not remember
+                    <input type='radio' name="${selectedMovies[i].name}" value='-1'>I do not remember
                   </label>
               </div>
             `)
@@ -254,22 +254,22 @@ $('.fold-2').on('click', '.show-second-form', function() {
       </h3>
       <div class='form-group movie'>
         <label class='radio-inline'>
-          <input type='radio' data-tag='${selectedMovies[i].tag}' name='${selectedMovies[i].name}' value='1' required>1 (Not at all)
+          <input type='radio' data-tag="${selectedMovies[i].tag}" name="${selectedMovies[i].name}" value='1' required>1 (Not at all)
         </label>
         <label class='radio-inline'>
-          <input type='radio' data-tag='${selectedMovies[i].tag}' name='${selectedMovies[i].name}' value='2'>2
+          <input type='radio' data-tag="${selectedMovies[i].tag}" name="${selectedMovies[i].name}" value='2'>2
         </label>
         <label class='radio-inline'>
-          <input type='radio' data-tag='${selectedMovies[i].tag}' name='${selectedMovies[i].name}' value='3'>3
+          <input type='radio' data-tag="${selectedMovies[i].tag}" name="${selectedMovies[i].name}" value='3'>3
         </label>
         <label class='radio-inline'>
-          <input type='radio' data-tag='${selectedMovies[i].tag}' name='${selectedMovies[i].name}' value='4'>4
+          <input type='radio' data-tag="${selectedMovies[i].tag}" name="${selectedMovies[i].name}" value='4'>4
         </label>
         <label class='radio-inline'>
-          <input type='radio' data-tag='${selectedMovies[i].tag}' name='${selectedMovies[i].name}' value='5'>5 (Very much)
+          <input type='radio' data-tag="${selectedMovies[i].tag}" name="${selectedMovies[i].name}" value='5'>5 (Very much)
         </label>
         <label class='radio-inline'>
-          <input type='radio' data-tag='${selectedMovies[i].tag}' name='${selectedMovies[i].name}' value='-1'>Not sure
+          <input type='radio' data-tag="${selectedMovies[i].tag}" name="${selectedMovies[i].name}" value='-1'>Not sure
         </label>
       </div>
       <div>
@@ -303,19 +303,19 @@ $('.fold-2').on('click', '.show-second-form', function() {
       </h3>
       <div class='form-group tag'>
         <label class='radio-inline'>
-          <input type='radio' data-movie='${selectedMovies[i].name}' name='${selectedMovies[i].tag}' value='Strongly disagree' required> Strongly disagree
+          <input type='radio' data-movie="${selectedMovies[i].name}" name="${selectedMovies[i].tag}" value='Strongly disagree' required> Strongly disagree
         </label>
         <label class='radio-inline'>
-          <input type='radio' data-movie='${selectedMovies[i].name}' name='${selectedMovies[i].tag}' value='Disagree'> Disagree
+          <input type='radio' data-movie="${selectedMovies[i].name}" name="${selectedMovies[i].tag}" value='Disagree'> Disagree
         </label>
         <label class='radio-inline'>
-          <input type='radio' data-movie='${selectedMovies[i].name}' name='${selectedMovies[i].tag}' value='Neither agree nor disagree'>Neither agree nor disagree
+          <input type='radio' data-movie="${selectedMovies[i].name}" name="${selectedMovies[i].tag}" value='Neither agree nor disagree'>Neither agree nor disagree
         </label>
         <label class='radio-inline'>
-          <input type='radio' data-movie='${selectedMovies[i].name}' name='${selectedMovies[i].tag}' value='Agree'> Agree
+          <input type='radio' data-movie="${selectedMovies[i].name}" name="${selectedMovies[i].tag}" value='Agree'> Agree
         </label>
         <label class='radio-inline'>
-          <input type='radio' data-movie='${selectedMovies[i].name}' name='${selectedMovies[i].tag}' value='Strongly agree'> Strongly agree
+          <input type='radio' data-movie="${selectedMovies[i].name}" name="${selectedMovies[i].tag}" value='Strongly agree'> Strongly agree
         </label>
       </div>
       <hr>
@@ -384,22 +384,22 @@ $('.fold-3').on('click', '.show-third-form', function() {
       </h3>
       <div class='form-group familiar'>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='1' required>1 (not at all)
+          <input type='radio' name="${tempTagArray[i]}" value='1' required>1 (not at all)
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='2'>2
+          <input type='radio' name="${tempTagArray[i]}" value='2'>2
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='3'>3
+          <input type='radio' name="${tempTagArray[i]}" value='3'>3
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='4'>4
+          <input type='radio' name="${tempTagArray[i]}" value='4'>4
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='5'>5 (very much)
+          <input type='radio' name="${tempTagArray[i]}" value='5'>5 (very much)
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='${tempTagArray[i]}' value='-1'>Not sure
+          <input type='radio' name="${tempTagArray[i]}" value='-1'>Not sure
         </label>
       </div>
       <h3>On a scale from 1 to 5, how often do you watch movies that could be described as 
@@ -409,22 +409,22 @@ $('.fold-3').on('click', '.show-third-form', function() {
       </h3>
       <div class='form-group how-often'>
         <label class='radio-inline'>
-          <input type='radio' name='how_often_${tempTagArray[i]}' data-name='${tempTagArray[i]}' value='1' required>1 (never)
+          <input type='radio' name='how_often_${tempTagArray[i]}' data-name="${tempTagArray[i]}" value='1' required>1 (never)
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='how_often_${tempTagArray[i]}' data-name='${tempTagArray[i]}' value='2'>2
+          <input type='radio' name='how_often_${tempTagArray[i]}' data-name="${tempTagArray[i]}" value='2'>2
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='how_often_${tempTagArray[i]}' data-name='${tempTagArray[i]}' value='3'>3
+          <input type='radio' name='how_often_${tempTagArray[i]}' data-name="${tempTagArray[i]}" value='3'>3
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='how_often_${tempTagArray[i]}' data-name='${tempTagArray[i]}' value='4'>4
+          <input type='radio' name='how_often_${tempTagArray[i]}' data-name="${tempTagArray[i]}" value='4'>4
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='how_often_${tempTagArray[i]}' data-name='${tempTagArray[i]}' value='5'>5 (very often)
+          <input type='radio' name='how_often_${tempTagArray[i]}' data-name="${tempTagArray[i]}" value='5'>5 (very often)
         </label>
         <label class='radio-inline'>
-          <input type='radio' name='how_often_${tempTagArray[i]}' data-name='${tempTagArray[i]}' value='-1'>Not sure
+          <input type='radio' name='how_often_${tempTagArray[i]}' data-name="${tempTagArray[i]}" value='-1'>Not sure
         </label>
       </div>
       <div class='form-group tag_definition'>
@@ -434,9 +434,9 @@ $('.fold-3').on('click', '.show-third-form', function() {
         </a> 
         </h3>
         <br>
-        <input type='text' data-order="first" data-name='${tempTagArray[i]}' required>
-        <input type='text' data-order="second" data-name='${tempTagArray[i]}' required>
-        <input type='text' data-order='third' data-name='${tempTagArray[i]}' required>
+        <input type='text' data-order="first" data-name="${tempTagArray[i]}" required>
+        <input type='text' data-order="second" data-name="${tempTagArray[i]}" required>
+        <input type='text' data-order='third' data-name="${tempTagArray[i]}" required>
       </div>
       <hr>
       <br>
