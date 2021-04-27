@@ -170,7 +170,7 @@ $('#movieList').append(`
 `)
 
 //if the user has not watched any movies, we ban them
-$('.selected-view, #movieListContainer').on('click', '.show-form, #haventWatched', function() {
+$('.selected-view, #movieListContainer').on('click', '#haventWatched', function() {
   turkID = $('input[name="turkID"]').val()
   if(turkID == "") {
     alert("Please provide your turk id")
