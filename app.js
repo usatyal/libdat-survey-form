@@ -221,3 +221,34 @@ for(const i in howOftenData){
 app.listen(port, function () {
   console.log("Running book-tag-api on port " + port)
 })
+
+app.post('/getRatedPairs', function(req, res){
+    // select movie-tag pairs with at least 5 ratings that are not -1 from users
+    // who have not selected fake movies, have finished the survey and were not excluded (id list)
+    resultingDict = {}
+    con.query('select movie, tag, count(score) as cnt from movietagscore where score<>-1 and UID not in (select * from (select UID from movieselection where TURKID in (select * from (select TURKID from movieselection where selected_fake_movie=1) as ms)) as mms) and UID in (select * from (select UID from tagdefinition) as td) and UID not in (62, 78, 91, 120, 130, 156, 148, 169, 171, 173, 184, 337, 331, 360, 367, 374, 442, 457, 464) group by movie, tag having cnt>=5;', function(err, result) {
+        if (err) {
+            console.log(err)
+        }
+        console.log("result")
+        for(i = 0; i < result.length; i++){
+            if(result[i].movie in resultingDict) {
+                resultingDict[result[i].movie].push(result[i].tag)
+            }else{
+                resultingDict[result[i].movie] = [result[i].tag]
+            }
+        }
+        //console.log(resultingDict)
+        res.send(resultingDict)
+    })
+})
+
+app.post('/insertNoMovies', function( req, res ){
+  const obj = req.body
+  con.query('INSERT INTO movieselection (TURKID, selected_movies, comment, selected_fake_movie, no_movies) VALUES (?, ?, ?, ?, ?)',[obj.turkID, "", obj.comment, 0, 1], function(err, result){
+     if (err) {
+      console.log(err)
+     }
+     res.send({UID:result.insertId})
+  })
+})

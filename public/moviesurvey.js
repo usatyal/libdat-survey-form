@@ -1,6 +1,7 @@
 // moviesurvey.js
 
 MOVIE_NUMBER = 10
+MIN_MOVIES_SELECTED = 20
 
 var turkID  = ''
 
@@ -39,12 +40,85 @@ function shuffle(array) {
 
 var fakeMovies = ['Dad, I am back 2 (1992)', 'Loose Limbs 5 (1998)', 'Operation Ringlet (2001)']
 
-function prepareRandomMovieNames(surveyTree) {
+var pairsToExclude = {}
+
+function populatePairsToExclude() {
+  $.ajax({
+    url: 'getRatedPairs',
+    type: 'post',
+    data: '',
+    async: false,
+    success: function (data) {
+      pairsToExclude = data
+    }
+  })
+}
+
+function excludingPairs(){
+  surveyTreeNew = {}
+  keys = Object.keys(surveyTree)
+  for(i = 0; i < keys.length; i++) {
+    currentMovie = keys[i]
+    currentTags = surveyTree[currentMovie]
+    for(j = 0; j < currentTags.length; j++) {
+      currentTag = currentTags[j]
+      if(currentMovie in pairsToExclude) {
+        if(!pairsToExclude[currentMovie].includes(currentTag)) {
+          addTag(surveyTreeNew, currentMovie, currentTag)
+        }
+      }else{
+        addTag(surveyTreeNew, currentMovie, currentTag)
+      }
+    }
+  }
+  surveyTree = surveyTreeNew
+  keys = Object.keys(surveyTree)
+}
+
+function addTag(surveyTreeNew, currentMovie, currentTag){
+  if(currentMovie in surveyTreeNew) {
+    surveyTreeNew[currentMovie].push(currentTag)
+  }else{
+    surveyTreeNew[currentMovie] = [currentTag]
+  }
+}
+
+function addRandomMoviesIfNecessary(surveyTreeCopy){
   movieNames = Object.keys(surveyTree)
+  if(movieNames.length >= MIN_MOVIES_SELECTED) {
+    return;
+  }
+  //pick random movies to populate the tree
+  allMovieNames = Object.keys(surveyTreeCopy)
+  for(i = 0; i < MIN_MOVIES_SELECTED - movieNames.length; i++) {
+    do{
+      randomMovie = allMovieNames[Math.floor(Math.random() * allMovieNames.length)]
+    } while(randomMovie in surveyTree);
+    randomTag = surveyTreeCopy[randomMovie][Math.floor(Math.random() * surveyTreeCopy[randomMovie].length)]
+    surveyTree[randomMovie] = [randomTag]
+  }
+}
+
+function copyArray(movieNames){
   array = []
   for(i = 0; i < movieNames.length; i++) {
     array.push(movieNames[i])
   }
+  return array
+}
+
+//preparing the dataset
+function prepareRandomMovieNames() {
+  //retrieving movie-tag pairs with enough ratings
+  populatePairsToExclude()
+  //saving full tree and excluding movie-tag pairs with enough ratings
+  surveyTreeCopy = surveyTree
+  excludingPairs()
+  //adding random movie-tag pairs from the full tree if the current tree does not have enough movies
+  addRandomMoviesIfNecessary(surveyTreeCopy)
+  //copying values, shuffling and adding fake movies
+  movieNames = Object.keys(surveyTree)
+  array = copyArray(movieNames)
   shuffle(array)
   array.splice(1, 0, fakeMovies[0])
   array.splice(3, 0, fakeMovies[1])
@@ -89,6 +163,30 @@ $('#movieList').append(`
   </button>
 `)
 
+$('#movieList').append(`
+  <button type='button' id='haventWatched' class='btn btn-primary'>
+    I have not watched these movies
+  </button>
+`)
+
+//if the user has not watched any movies, we ban them
+$('.selected-view, #movieListContainer').on('click', '.show-form, #haventWatched', function() {
+  turkID = $('input[name="turkID"]').val()
+  if(turkID == "") {
+    alert("Please provide your turk id")
+    return
+  }
+  $.ajax ({
+      url: 'insertNoMovies',
+      type: 'post',
+      data: $('form#selectMovie').serialize(),
+      success: function(data) {
+        //console.log("Yep")
+      }
+  })
+  alert('Sorry, you cannot take this survey. Your Turk ID is banned. If you take this survey again, we will reject your answers.')
+})
+
 // movie selection
 $('#movieList').on('click', 'input[name="movieNames"]', function() {
   const movie = {}
@@ -113,6 +211,7 @@ $('#movieList').on('click', 'input[name="movieNames"]', function() {
     // when user selects at least one item
     if (selectedMovies.length > 0) {
       $('#notEnoughMovies').show()
+      $('#haventWatched').hide()
     }
     $('.selectedNum').html(selectedMovies.length)
     $('.remainingNum').html(MOVIE_NUMBER - selectedMovies.length)
@@ -132,6 +231,7 @@ $('#movieList').on('click', 'input[name="movieNames"]', function() {
     // hide the button if disselected all
     if (selectedMovies.length === 0) {
       $('#notEnoughMovies').hide()
+      $('#haventWatched').show()
     }
     // hide the next button if less than needed selected
     if (selectedMovies.length < MOVIE_NUMBER) {
@@ -161,11 +261,11 @@ $('.selected-view, #movieListContainer').on('click', '.show-form, #notEnoughMovi
       url: 'insertMovieSelection',
       type: 'post',
       data: $('form#selectMovie').serialize(),
-      success: function(data) {    
+      success: function(data) {
         if (data) {
           localStorage.setItem("UID", data.UID)
-          
-          // check fake tag 
+
+          // check fake tag
           if((selectedMovies.map(a => a.tag)).includes('fakeMovie')) {
             alert('You selected fake movies. Your Turk ID is banned. If you take this survey again, we will reject your answers.')
             return
