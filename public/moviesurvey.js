@@ -167,7 +167,7 @@ $('.selected-view, #movieListContainer').on('click', '.show-form, #notEnoughMovi
           
           // check fake tag 
           if((selectedMovies.map(a => a.tag)).includes('fakeMovie')) {
-            alert('You selected fake movie')
+            alert('You selected fake movies. Your Turk ID is banned. If you take this survey again, we will reject your answers.')
             return
           }
 
