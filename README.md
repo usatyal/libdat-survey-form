@@ -1,6 +1,5 @@
 # libdat-survey-form
-This is a survey form for book tags evaluation for the libdat project (Åbo Akademi). 
-for-comment-only
+This is a survey form for books/movies tags evaluation for the libdat project (Åbo Akademi). 
 The survey can be tested from (http://recommendabook.me:3030/moviesurvey). 
 This is write once and forget type of project. 
 
