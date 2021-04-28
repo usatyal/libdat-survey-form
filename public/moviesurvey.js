@@ -3,6 +3,12 @@
 MOVIE_NUMBER = 10
 MIN_MOVIES_SELECTED = 20
 
+// these are tags, for which we already have enough data
+// it was difficult to include them into the request, because it requires cleaning the dataset
+var excludedTags = ['animation', 'artistic', 'comedy', 'environmental', 'existentialism', 'funny', 'futuristic',
+  'historical', 'holocaust', 'justice', 'martial arts', 'overrated', 'sci-fi', 'self discovery', 'serial killer',
+  'social commentary', 'space', 'stylized', 'superhero', 'suspense', 'thriller', 'war']
+
 var turkID  = ''
 
 function showValidationError(){
@@ -62,6 +68,9 @@ function excludingPairs(){
     currentTags = surveyTree[currentMovie]
     for(j = 0; j < currentTags.length; j++) {
       currentTag = currentTags[j]
+      if(excludedTags.includes(currentTag)) {
+        continue
+      }
       if(currentMovie in pairsToExclude) {
         if(!pairsToExclude[currentMovie].includes(currentTag)) {
           addTag(surveyTreeNew, currentMovie, currentTag)
@@ -97,6 +106,7 @@ function addRandomMoviesIfNecessary(surveyTreeCopy){
     randomTag = surveyTreeCopy[randomMovie][Math.floor(Math.random() * surveyTreeCopy[randomMovie].length)]
     surveyTree[randomMovie] = [randomTag]
   }
+  console.log(surveyTree)
 }
 
 function copyArray(movieNames){
@@ -114,6 +124,7 @@ function prepareRandomMovieNames() {
   //saving full tree and excluding movie-tag pairs with enough ratings
   surveyTreeCopy = surveyTree
   excludingPairs()
+  console.log(surveyTree)
   //adding random movie-tag pairs from the full tree if the current tree does not have enough movies
   addRandomMoviesIfNecessary(surveyTreeCopy)
   //copying values, shuffling and adding fake movies
