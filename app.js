@@ -226,11 +226,10 @@ app.post('/getRatedPairs', function(req, res){
     // select movie-tag pairs with at least 5 ratings that are not -1 from users
     // who have not selected fake movies, have finished the survey and were not excluded (id list)
     resultingDict = {}
-    con.query('select movie, tag, count(score) as cnt from movietagscore where score<>-1 and UID not in (select * from (select UID from movieselection where TURKID in (select * from (select TURKID from movieselection where selected_fake_movie=1 or no_movies=1) as ms)) as mms) and UID in (select * from (select UID from tagdefinition) as td) and UID not in (62, 78, 91, 120, 130, 156, 148, 169, 171, 173, 184, 337, 331, 360, 367, 374, 442, 457, 464, 786, 823, 938, 1022, 1206, 1229) group by movie, tag having cnt>=5;', function(err, result) {
+    con.query('select movie, tag, count(score) as cnt from movietagscore where score<>-1 and UID not in (select * from (select UID from movieselection where TURKID in (select * from (select TURKID from movieselection where selected_fake_movie=1 or no_movies=1) as ms)) as mms) and UID in (select * from (select UID from tagdefinition) as td) and UID not in (62, 78, 91, 120, 130, 156, 148, 169, 171, 173, 184, 337, 331, 360, 367, 374, 442, 457, 464, 786, 823, 938, 1022, 1206, 1229, 274, 112, 934, 63, 111, 277, 843, 950, 1221) group by movie, tag having cnt>=5;', function(err, result) {
         if (err) {
             console.log(err)
         }
-        console.log("result")
         for(i = 0; i < result.length; i++){
             if(result[i].movie in resultingDict) {
                 resultingDict[result[i].movie].push(result[i].tag)
@@ -238,7 +237,6 @@ app.post('/getRatedPairs', function(req, res){
                 resultingDict[result[i].movie] = [result[i].tag]
             }
         }
-        //console.log(resultingDict)
         res.send(resultingDict)
     })
 })

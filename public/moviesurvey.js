@@ -106,7 +106,7 @@ function addRandomMoviesIfNecessary(surveyTreeCopy){
     randomTag = surveyTreeCopy[randomMovie][Math.floor(Math.random() * surveyTreeCopy[randomMovie].length)]
     surveyTree[randomMovie] = [randomTag]
   }
-  console.log(surveyTree)
+  //console.log(surveyTree)
 }
 
 function copyArray(movieNames){
@@ -124,7 +124,6 @@ function prepareRandomMovieNames() {
   //saving full tree and excluding movie-tag pairs with enough ratings
   surveyTreeCopy = surveyTree
   excludingPairs()
-  console.log(surveyTree)
   //adding random movie-tag pairs from the full tree if the current tree does not have enough movies
   addRandomMoviesIfNecessary(surveyTreeCopy)
   //copying values, shuffling and adding fake movies
