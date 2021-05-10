@@ -20,15 +20,6 @@ var con = mysql.createConnection({
   database : process.env.RDS_DB_NAME
 })
 
-con.connect(function(err) {
-  if (err) {
-    // console.error('error connecting: ' + err.stack);
-    return;
-  }
- 
-  // console.log('connected as id ' + con.threadId);
-});
-
 // load books
 const BOOKLIST_FOR_SEARCH = require('./public/names.js')
 const booklist_for_search = BOOKLIST_FOR_SEARCH.booklist_for_search 
@@ -56,12 +47,6 @@ app.get('/booksurvey', function(req, res) {
     res.sendFile(path.join(__dirname, "/survey.html"))
 })
 
-// movie survey page
-app.get('/moviesurvey', function(req, res) {
-    res.sendFile(path.join(__dirname, "/moviesurvey.html"))
-})
-
-
 // survery book search
 app.post('/searchBookFromTerm', function(req, res){
   const obj = req.body
@@ -77,7 +62,6 @@ app.post('/searchBookFromTerm', function(req, res){
     }
   }) 
   res.send({resultBookList: resultBookList})
-
 })
 
 // calculates the tag for selected books
@@ -100,153 +84,20 @@ app.post('/submitSurvey', function(req,res){
   delete obj.tag
   delete obj.name
   
-  for(const i in obj){
-   con.query('INSERT INTO surveyresponse (name_or_turkid, title, tag, score) VALUES (?, ?, ?, ?)',[name, i, tag, obj[i]], function(err, result){
-   	 if (err) {
-   	 	console.log(err)
-   	 }
-   }) 
-  }
-  // Nodejs is single threaded, this response runs before completing the for loop above, need to imporve using promise resolve
-  res.send({success:true})
-})
-
-// insert movie selection
-app.post('/insertMovieSelection', function( req, res ){
-  const obj = req.body
-  let selectedFakeMovie = 0
-  // handling each seperately so that when obj.movieNames is not array, it won't throw error
-  if (obj.movieNames.includes('Dad, I am back 2 (1992)') || obj.movieNames.includes('Loose Limbs 5 (1998)') || obj.movieNames.includes('Operation Ringlet (2001)')) {
-    selectedFakeMovie = 1
-  }
-  // console.log(selectedFakeMovie)
-  con.query('INSERT INTO movieselection (TURKID, selected_movies, comment, selected_fake_movie) VALUES (?, ?, ?, ?)',[obj.turkID, obj.movieNames.toString(), obj.comment, selectedFakeMovie], function(err, result){
-     if (err) {
-      console.log(err)
+  async function insertData () {
+    for(const i in obj){
+     try {
+       await con.query('INSERT INTO surveyresponse (name_or_turkid, title, tag, score) VALUES (?, ?, ?, ?)',[name, i, tag, obj[i]], function(err, result){
+       }) 
+      } catch (err) {
+        console.log(err)
      }
-     res.send({UID:result.insertId})
-  })
-})
-
-// insertHowLongAgo
-app.post('/insertHowLongAgo', function( req, res ){
-  const obj = req.body
-  const UID  = obj.UID
-  const comment = obj.comment
-  delete obj.UID
-  delete obj.comment
-  for(const i in obj){
-   con.query('INSERT INTO moviequestion (UID, movie, how_long_ago, comment) VALUES (?, ?, ?, ?)',[UID, i, obj[i], comment], function(err, result){
-     if (err) {
-      // console.log(err)
-     }
-   }) 
+    }
   }
+  insertData()
   res.send({success:true})
-})
-
-// insertMovieTagQuestion
-app.post('/insertMovieTagQuestion', function( req, res ){
-  const obj = req.body
-  const movieData = obj.movieTagArray
-  const tagData = obj.tagMovieArray
-  const commentData = obj.message
-  for(const i in movieData){
-   con.query('INSERT INTO movietagscore (UID, movie, tag, score) VALUES (?, ?, ?, ?)',[movieData[i].UID, movieData[i].movie, movieData[i].tag, movieData[i].score], function(err, result){
-     if (err) {
-      // console.log(err)
-    }
-  }) 
- }
- for(const i in tagData){
-   con.query('INSERT INTO movietagdifficulty (UID, movie, tag, score) VALUES (?, ?, ?, ?)',[tagData[i].UID, tagData[i].movie, tagData[i].tag, tagData[i].score], function(err, result){
-     if (err) {
-      // console.log(err)
-    }
-  }) 
- }
- con.query('INSERT INTO comment (UID, type, comment) VALUES (?, ?, ?)',[commentData[0], 'movie-tag-comment', commentData[1]], function(err, result){
-   if (err) { 
-     // console.log(err)
-   }
- })
- res.send({success:true})
-})
-
-// tag question
-app.post('/tagQuestion', function ( req, res ){
-  const obj = req.body
-  const howOftenData = obj.howOftenArray
-  const tagDefinitionData = obj.tagDefinitionArray
-  const tagFamilarityData = obj.tagFamilarityArray
-  const messageData = obj.message
-  // insert familarity value
-  for(const i in tagFamilarityData){
-   con.query('INSERT INTO tagquestion (UID, tag, tagfamilarity) VALUES (?, ?, ?)',[tagFamilarityData[i].UID, tagFamilarityData[i].tagname, tagFamilarityData[i].tagfamilarity], function(err, result){
-     if (err) {
-      console.log(err)
-    }
-  }) 
- }
-
-// update the same table with how often value
-for(const i in howOftenData){
-   con.query('UPDATE tagquestion SET howoften = ? WHERE UID = ? AND tag = ?',[howOftenData[i].tagHowOftenValue, howOftenData[i].UID, howOftenData[i].tagname], function(err, result){
-     if (err) {
-      console.log(err)
-    }
-  }) 
- }
- 
- // update the same table with tag definition value
- for(const i in tagDefinitionData){
-   con.query('INSERT INTO tagdefinition (UID, tagname, tagdefinition, ordervalue) VALUES (?, ?, ?, ?)',[tagDefinitionData[i].UID, tagDefinitionData[i].tagname, tagDefinitionData[i].tagDefinition, tagDefinitionData[i].ordervalue], function(err, result){
-     if (err) {
-      console.log(err)
-    }
-  }) 
- }
-
- // comment
- con.query('INSERT INTO comment (UID, type, comment) VALUES (?, ?, ?)',[messageData[0], 'tag-question-comment', messageData[1]], function(err, result){
-   if (err) { 
-     console.log(err)
-   }
- })
-
- // console.log(obj)
- res.send({success:true})
 })
 
 app.listen(port, function () {
   console.log("Running book-tag-api on port " + port)
-})
-
-app.post('/getRatedPairs', function(req, res){
-    // select movie-tag pairs with at least 5 ratings that are not -1 from users
-    // who have not selected fake movies, have finished the survey and were not excluded (id list)
-    resultingDict = {}
-    con.query('select movie, tag, count(score) as cnt from movietagscore where score<>-1 and UID not in (select * from (select UID from movieselection where TURKID in (select * from (select TURKID from movieselection where selected_fake_movie=1 or no_movies=1) as ms)) as mms) and UID in (select * from (select UID from tagdefinition) as td) and UID not in (62, 78, 91, 120, 130, 156, 148, 169, 171, 173, 184, 337, 331, 360, 367, 374, 442, 457, 464, 786, 823, 938, 1022, 1206, 1229, 274, 112, 934, 63, 111, 277, 843, 950, 1221) group by movie, tag having cnt>=5;', function(err, result) {
-        if (err) {
-            console.log(err)
-        }
-        for(i = 0; i < result.length; i++){
-            if(result[i].movie in resultingDict) {
-                resultingDict[result[i].movie].push(result[i].tag)
-            }else{
-                resultingDict[result[i].movie] = [result[i].tag]
-            }
-        }
-        res.send(resultingDict)
-    })
-})
-
-app.post('/insertNoMovies', function( req, res ){
-  const obj = req.body
-  con.query('INSERT INTO movieselection (TURKID, selected_movies, comment, selected_fake_movie, no_movies) VALUES (?, ?, ?, ?, ?)',[obj.turkID, "", obj.comment, 0, 1], function(err, result){
-     if (err) {
-      console.log(err)
-     }
-     res.send({UID:result.insertId})
-  })
 })
