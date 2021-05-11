@@ -1,5 +1,5 @@
-NUMBER_OF_BOOKS = 2
-NUMBER_OF_RESPONSES = 4
+NUMBER_OF_BOOKS = 10
+NUMBER_OF_RESPONSES = 30
 
 
 function showValidationError(){
@@ -27,9 +27,9 @@ $('#inputBookName').on('keypress', function(e) {
     $.ajax({
       url: 'searchBookFromTerm',
       type: 'post',
-      data: $('form#searchTermForm').serialize()+ "&uid=" + localStorage.getItem('UID'),
+      data: $('form#searchTermForm').serialize()+ "&uid=" + localStorage.getItem('uid'),
       success: function(data) {
-        localStorage.setItem("UID", data.UID)
+        localStorage.setItem("uid", data.UID)
         $('#instruction').show()
         $.each(data.resultBookList, function(i) {
           $('#books').prepend(`<div class='checkbox'>
@@ -125,7 +125,7 @@ $('#submitForm').click(function() {
     $.ajax({
       url: 'submitSurvey',
       type: 'post',
-      data: $('form#tagRangeForm').serialize() + "&tag=" + tagArray[currentIndex].tag + "&uid=" + localStorage.getItem('UID'),
+      data: $('form#tagRangeForm').serialize() + "&tag=" + tagArray[currentIndex].tag + "&uid=" + localStorage.getItem('uid'),
       success: function(data) {
         if (data.success === true) {
           let messageIndex = NUMBER_OF_RESPONSES/selectedBooks.length - 1
@@ -135,7 +135,7 @@ $('#submitForm').click(function() {
             $('.jumbotron h2').hide()
 
             // TODO: this should be replaced by uid + turkId
-            $('.randomcode').html(localStorage.getItem('UID') + turkId)
+            $('.randomcode').html(localStorage.getItem('uid') + turkId)
           }
           currentIndex = currentIndex + 1
           currentPagination = currentPagination + 1
