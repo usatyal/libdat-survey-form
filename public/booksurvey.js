@@ -1,5 +1,5 @@
 NUMBER_OF_BOOKS = 10
-NUMBER_OF_RESPONSES = 3
+NUMBER_OF_RESPONSES = 30
 
 
 function showValidationError(){
