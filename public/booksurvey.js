@@ -1,8 +1,18 @@
+NUMBER_OF_BOOKS = 2
+NUMBER_OF_RESPONSES = 4
+
+
+function showValidationError(){
+  alert("Please check all the fields")
+}
+
+
 let selectedBooks = []
 let tagArray = []
-let currentIndex = 0
-let totalPagination = 3
+let currentIndex = 1
 let currentPagination = 1
+
+$('.remainingNum').html(NUMBER_OF_BOOKS)
 
 $('#inputBookName').on('keypress', function(e) {
   if (e.which == 13) {
@@ -30,16 +40,16 @@ $('#inputBookName').on('keypress', function(e) {
 
 $('#books').on('click', 'input[name="bookNames"]', function() {
   if (this.checked === true) {
-    if (selectedBooks.length === 6) {
-      alert('You have already selected 6 books')
+    if (selectedBooks.length === NUMBER_OF_BOOKS) {
+      alert(`You have already selected ${NUMBER_OF_BOOKS} books`)
       return false;
     }
     selectedBooks.push(this.value)
-    if (selectedBooks.length === 6) {
+    if (selectedBooks.length === NUMBER_OF_BOOKS) {
       $('.show-form').show()
     }
     $('.selectedNum').html(selectedBooks.length)
-    $('.remainingNum').html(6 - selectedBooks.length)
+    $('.remainingNum').html(NUMBER_OF_BOOKS - selectedBooks.length)
     $('ul.selected-books').empty()
     $.each(selectedBooks, function(i) {
       $('ul.selected-books').append(`<li> ${selectedBooks[i]} </li>`)
@@ -47,7 +57,7 @@ $('#books').on('click', 'input[name="bookNames"]', function() {
   } else {
     selectedBooks.pop(this.value)
     $('.selectedNum').html(selectedBooks.length)
-    $('.remainingNum').html(6 - selectedBooks.length)
+    $('.remainingNum').html(NUMBER_OF_BOOKS - selectedBooks.length)
     $('ul.selected-books').empty()
     $.each(selectedBooks, function(i) {
       $('ul.selected-books').append(`<li> ${selectedBooks[i]} </li>`)
@@ -60,19 +70,20 @@ $('.selected-view').on('click', '.show-form', function() {
     url: 'calculateTag',
     type: 'post',
     data: {
-      selectedBooks: selectedBooks
+      selectedBooks: selectedBooks,
+      turkId: $('#turkId').val()
     },
     success: function(data) {
       tagArray = data
       $('.intro-view').empty()
       $('#selectedBooks').show()
       $('#selectedBooks .jumbotron').show()
-      $('#totalPagination').html(totalPagination)
+      $('#totalPagination').html(NUMBER_OF_RESPONSES/selectedBooks.length)
       $('#currentPagination').html(currentPagination)
       $('#submitFirstForm').show()
       $('#calculatedTagName').html(tagArray[currentIndex].tag)
       $.each(selectedBooks, function(i) {
-        $('.form-wrapper').prepend(`<h3> ${selectedBooks[i]} </h3>
+        $('.form-wrapper').append(`<h3> ${selectedBooks[i]} </h3>
            <div class='form-group'>
              <label class='radio-inline'>
                <input type='radio' name='${selectedBooks[i]}' value='1' required>1
@@ -106,8 +117,13 @@ $('#submitForm').click(function() {
       data: $('form#tagRangeForm').serialize() + "&tag=" + tagArray[currentIndex].tag,
       success: function(data) {
         if (data.success === true) {
-          if (currentIndex === 2) {
+          let messageIndex = NUMBER_OF_RESPONSES/selectedBooks.length - 1
+          if (currentIndex > messageIndex) {
+            // show message hide pagination
             $('.message').show()
+            $('.jumbotron h2').hide()
+
+            // TODO: this should be replaced by uid + turkId
             $('.randomcode').html(Math.random().toString(36).slice(2))
           }
           currentIndex = currentIndex + 1

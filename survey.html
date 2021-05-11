@@ -15,6 +15,10 @@
           <div class="col-md-6">
             <form id="searchTermForm">
               <div class="form-group">
+                <label for="turkId">Please enter your amazon turk id: </label>
+                <input type="text" class="form-control" id="turkId">
+              </div>
+              <div class="form-group">
                 <label for="inputBookName">Search a book with: </label>
                 <input type="text" class="form-control" id="inputBookName" name="searchTerm"  placeholder="Search.....">
               </div>
@@ -26,7 +30,7 @@
             </div>
           </div>
           <div class="col-md-6 selected-view">
-           <h3>You have selected <span class="selectedNum">0</span> books, please select <span class="remainingNum">6</span> books </h3>
+           <h3>You have selected <span class="selectedNum">0</span> books, please select <span class="remainingNum"></span> books </h3>
            <ul class="selected-books">
            </ul>
            <button class="btn btn-primary show-form" style="display: none;">NEXT</button>
@@ -49,11 +53,12 @@
             <label for="name">Name or Amazon Turk ID: </label>
             <input type="text" name="name" id="username" required />
             <br>
+            <div class="form-wrapper">
+              <!-- Form genereted from js -->
+            </div>
             <label> Please let us know if there is anything wrong with the survey </label> 
             <br>
             <textarea rows='4' cols='50' name='comment'></textarea>
-          </div>
-          <div class="form-wrapper">
           </div>
           <!-- When you click this button, trigger the submit event on this form. -->
           <p class="message" style="display: none;">Thank you for taking part in the survey. Your random code for amazon turk is:<b> <span class="randomcode"></span></b>. You have already filled up the for for sufficient times. If you want you can continue filling up the form.</p>
