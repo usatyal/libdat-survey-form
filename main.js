@@ -100,5 +100,5 @@ app.post('/submitSurvey', function(req,res){
 })
 
 app.listen(port, function () {
-  console.log("Running book-tag-api on port " + port)
+  console.log("Running book survey on port " + port)
 })
