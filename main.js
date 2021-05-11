@@ -47,10 +47,13 @@ app.get('/booksurvey', function(req, res) {
     res.sendFile(path.join(__dirname, "/survey.html"))
 })
 
+
 // survery book search
 app.post('/searchBookFromTerm', function(req, res){
   const obj = req.body
   const searchTerm = obj.searchTerm
+  const turkId = obj.turkId
+  const uid = obj.uid
   var keywordIndex
   var resultBookList = []
 
@@ -60,20 +63,43 @@ app.post('/searchBookFromTerm', function(req, res){
       keywordIndex = i  // grouping keyword is in
       resultBookList.push(booklist_for_search[i]) //debug
     }
-  }) 
-  res.send({resultBookList: resultBookList})
+  })
+  // insert search query and create uid if not exist already
+  if ( uid === 'null') {
+    con.query('INSERT INTO bookselection (searchterm, turkid) VALUES (?, ?)',[searchTerm, turkId], function(err, result){
+    if (err) {
+      console.log(err)
+    } 
+    res.send({resultBookList: resultBookList, UID: result.insertId})
+   }) 
+  } else {
+    res.send({resultBookList: resultBookList, UID: uid})
+  }
 })
 
 // calculates the tag for selected books
 app.post('/calculateTag', function(req, res) {
 	const obj = req.body
 	const bookArray = obj.selectedBooks 
+  const uid = obj.uid 
 	const query = 'select tag, abs(max(score) - min(score)) as absoluteDifference from tags where title in (?) group by tag order by absoluteDifference desc' 
-
-	// TODO: multiple query here send the uid and tag list in frontend
+  
   con.query(query, [bookArray], function (err, result) {
 	  res.send(result)
 	})
+
+  // update bookselection
+  async function updateBookSelection () {
+    try {
+       await con.query('UPDATE bookselection SET bookselection = ? WHERE uid = ?',[bookArray.toString(), uid], function(err, result){
+       }) 
+      } catch (err) {
+        console.log(err)
+     }
+  }
+
+  updateBookSelection()
+
 })
 
 // submits form
@@ -81,21 +107,38 @@ app.post('/submitSurvey', function(req,res){
   const obj = req.body
   // saved the tag in a variable and removed it from the obj so that it can be iterated
   const tag = obj.tag
-  const name = obj.name
+  const uid = obj.uid
+  const comment = obj.comment
   delete obj.tag
-  delete obj.name
+  delete obj.uid
+  delete obj.comment
+
+  async function insertComment () {
+    try {
+       await con.query('INSERT INTO bookcomment (uid, comment) VALUES (?, ?)',[uid, comment], function(err, result){
+       }) 
+      } catch (err) {
+        console.log(err)
+     }
+  }
   
   async function insertData () {
     for(const i in obj){
      try {
-       await con.query('INSERT INTO surveyresponse (name_or_turkid, title, tag, score) VALUES (?, ?, ?, ?)',[name, i, tag, obj[i]], function(err, result){
+       await con.query('INSERT INTO surveyresponse (uid, title, tag, score) VALUES (?, ?, ?, ?)',[uid, i, tag, obj[i]], function(err, result){
        }) 
       } catch (err) {
         console.log(err)
      }
     }
   }
+  
+  if( comment != "") {
+    insertComment()
+  }
+
   insertData()
+
   res.send({success:true})
 })
 

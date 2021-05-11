@@ -16,11 +16,11 @@
             <form id="searchTermForm">
               <div class="form-group">
                 <label for="turkId">Please enter your amazon turk id: </label>
-                <input type="text" class="form-control" id="turkId">
+                <input type="text" class="form-control" id="turkId" name="turkId" required>
               </div>
               <div class="form-group">
                 <label for="inputBookName">Search a book with: </label>
-                <input type="text" class="form-control" id="inputBookName" name="searchTerm"  placeholder="Search.....">
+                <input type="text" class="form-control" id="inputBookName" name="searchTerm"  placeholder="Search....." required>
               </div>
             </form>
             <div id="book-list-select">
@@ -50,9 +50,6 @@
       </div>
         <form id="tagRangeForm">
           <div class="form-group">
-            <label for="name">Name or Amazon Turk ID: </label>
-            <input type="text" name="name" id="username" required />
-            <br>
             <div class="form-wrapper">
               <!-- Form genereted from js -->
             </div>
