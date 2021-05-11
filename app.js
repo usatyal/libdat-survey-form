@@ -67,7 +67,6 @@ app.post('/searchBookFromTerm', function(req, res){
 // calculates the tag for selected books
 app.post('/calculateTag', function(req, res) {
 	const obj = req.body
-  console.log(obj)
 	const bookArray = obj.selectedBooks 
 	const query = 'select tag, abs(max(score) - min(score)) as absoluteDifference from tags where title in (?) group by tag order by absoluteDifference desc' 
 
