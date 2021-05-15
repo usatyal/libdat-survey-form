@@ -1,11 +1,9 @@
 NUMBER_OF_BOOKS = 2
 NUMBER_OF_RESPONSES = 4
 
-
 function showValidationError(){
   alert("Please check all the fields")
 }
-
 
 let selectedBooks = []
 let tagArray = []
@@ -75,17 +73,19 @@ $('#books').on('click', 'input[name="bookNames"]', function() {
 })
 
 $('.selected-view').on('click', '.show-form', function() {
+  // saving this to use in randomcode
+  turkId = $('#turkId').val()
   $.ajax({
     url: 'calculateTag',
     type: 'post',
     data: {
       selectedBooks: selectedBooks,
-      turkId: $('#turkId').val()
+      turkId: turkId
     },
     success: function(data) {
-      console.log(data.uid)
-      console.log(data.result)
       tagArray = data.result
+      // uid is set in this point and it will remain same
+      localStorage.setItem('uid', data.uid)
       $('.intro-view').empty()
       $('#selectedBooks').show()
       $('#selectedBooks .jumbotron').show()
@@ -133,8 +133,6 @@ $('#submitForm').click(function() {
             // show message hide pagination
             $('.message').show()
             $('.jumbotron h2').hide()
-
-            // TODO: this should be replaced by uid + turkId
             $('.randomcode').html(localStorage.getItem('uid') + turkId)
           }
           currentIndex = currentIndex + 1
