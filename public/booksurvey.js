@@ -1,5 +1,5 @@
-NUMBER_OF_BOOKS = 2
-NUMBER_OF_RESPONSES = 4
+NUMBER_OF_BOOKS = 10
+NUMBER_OF_RESPONSES = 30
 
 function showValidationError(){
   alert("Please check all the fields")
@@ -36,6 +36,7 @@ $('#inputBookName').on('keypress', function(e) {
           </div>`)
         })
         $('#submitSelectedBooks').show()
+        $('#noBook').show()
       }
     })
   }
@@ -52,8 +53,11 @@ $('#books').on('click', 'input[name="bookNames"]', function() {
       return false
     }
     selectedBooks.push(this.value)
+    if (selectedBooks.length >= 1) {
+      $('.show-form').html('I CAN\'T FIND MORE BOOKS')
+    }
     if (selectedBooks.length === NUMBER_OF_BOOKS) {
-      $('.show-form').show()
+      $('.show-form').html('NEXT')
     }
     $('.selectedNum').html(selectedBooks.length)
     $('.remainingNum').html(NUMBER_OF_BOOKS - selectedBooks.length)
@@ -73,6 +77,12 @@ $('#books').on('click', 'input[name="bookNames"]', function() {
 })
 
 $('.selected-view').on('click', '.show-form', function() {
+  // throw out from the survey is none selected
+  if (selectedBooks.length < 1) {
+    // TODO: implement ajax request?
+    alert ('Sorry, you cannot take this survey. Your Turk ID will be banned. If you take this survey again, we will reject your answers.')
+    return false
+  }
   // saving this to use in randomcode
   turkId = $('#turkId').val()
   $.ajax({
