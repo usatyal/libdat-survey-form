@@ -1,5 +1,5 @@
-NUMBER_OF_BOOKS = 10
-NUMBER_OF_RESPONSES = 30
+NUMBER_OF_BOOKS = 2
+NUMBER_OF_RESPONSES = 4
 
 
 function showValidationError(){
@@ -22,14 +22,12 @@ $('#inputBookName').on('keypress', function(e) {
       return
     }
     e.preventDefault()
-    turkId = $('#turkId').val()
     $('#books div.checkbox').remove()
     $.ajax({
       url: 'searchBookFromTerm',
       type: 'post',
-      data: $('form#searchTermForm').serialize()+ "&uid=" + localStorage.getItem('uid'),
+      data: $('form#searchTermForm').serialize(),
       success: function(data) {
-        localStorage.setItem("uid", data.UID)
         $('#instruction').show()
         $.each(data.resultBookList, function(i) {
           $('#books').prepend(`<div class='checkbox'>
@@ -82,10 +80,12 @@ $('.selected-view').on('click', '.show-form', function() {
     type: 'post',
     data: {
       selectedBooks: selectedBooks,
-      uid: localStorage.getItem('uid')
+      turkId: $('#turkId').val()
     },
     success: function(data) {
-      tagArray = data
+      console.log(data.uid)
+      console.log(data.result)
+      tagArray = data.result
       $('.intro-view').empty()
       $('#selectedBooks').show()
       $('#selectedBooks .jumbotron').show()

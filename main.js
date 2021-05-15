@@ -13,11 +13,12 @@ app.use(express.static(assetsPath));
 var mysql = require('mysql')
 
 var con = mysql.createConnection({
-  host     : process.env.RDS_HOSTNAME,
-  user     : process.env.RDS_USERNAME,
-  password : process.env.RDS_PASSWORD,
-  port     : process.env.RDS_PORT,
-  database : process.env.RDS_DB_NAME
+  host               : process.env.RDS_HOSTNAME,
+  user               : process.env.RDS_USERNAME,
+  password           : process.env.RDS_PASSWORD,
+  port               : process.env.RDS_PORT,
+  database           : process.env.RDS_DB_NAME,
+  multipleStatements : true
 })
 
 // load books
@@ -47,15 +48,25 @@ app.get('/booksurvey', function(req, res) {
     res.sendFile(path.join(__dirname, "/survey.html"))
 })
 
-
 // survery book search
 app.post('/searchBookFromTerm', function(req, res){
   const obj = req.body
   const searchTerm = obj.searchTerm
   const turkId = obj.turkId
-  const uid = obj.uid
   var keywordIndex
   var resultBookList = []
+
+  // insert search key
+  async function insertSearchKey () {
+    try {
+       await con.query('INSERT INTO searchterm (turkid, searchkey) VALUES (?, ?)',[turkId, searchTerm], function(err, result){
+       }) 
+      } catch (err) {
+        console.log(err)
+     }
+  }
+
+  insertSearchKey ()
 
   $.each(booklist_for_search, function(i) {
     var rSearchTerm = new RegExp('\\b' + searchTerm + '\\b','i')
@@ -63,43 +74,25 @@ app.post('/searchBookFromTerm', function(req, res){
       keywordIndex = i  // grouping keyword is in
       resultBookList.push(booklist_for_search[i]) //debug
     }
-  })
-  // insert search query and create uid if not exist already
-  if ( uid === 'null') {
-    con.query('INSERT INTO bookselection (searchterm, turkid) VALUES (?, ?)',[searchTerm, turkId], function(err, result){
-    if (err) {
-      console.log(err)
-    } 
-    res.send({resultBookList: resultBookList, UID: result.insertId})
-   }) 
-  } else {
-    res.send({resultBookList: resultBookList, UID: uid})
-  }
+  }) 
+  res.send({resultBookList: resultBookList})
 })
 
 // calculates the tag for selected books
 app.post('/calculateTag', function(req, res) {
 	const obj = req.body
+  console.log(obj)
 	const bookArray = obj.selectedBooks 
-  const uid = obj.uid 
-	const query = 'select tag, abs(max(score) - min(score)) as absoluteDifference from tags where title in (?) group by tag order by absoluteDifference desc' 
+  const turkId = obj.turkId
+  var uid;
+  // same query for calculating tag and inserting the bookselection
+	const query = 'select tag, abs(max(score) - min(score)) as absoluteDifference from tags where title in (?) group by tag order by absoluteDifference desc; INSERT INTO bookselection (turkid, bookselection) VALUES (?, ?)'
   
-  con.query(query, [bookArray], function (err, result) {
-	  res.send(result)
+  con.query(query, [bookArray, turkId, bookArray.toString()], function (err, result) {
+    if (!err) {
+     res.send({result: result[0], uid: result[1].insertId})
+    }
 	})
-
-  // update bookselection
-  async function updateBookSelection () {
-    try {
-       await con.query('UPDATE bookselection SET bookselection = ? WHERE uid = ?',[bookArray.toString(), uid], function(err, result){
-       }) 
-      } catch (err) {
-        console.log(err)
-     }
-  }
-
-  updateBookSelection()
-
 })
 
 // submits form
