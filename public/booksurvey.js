@@ -99,7 +99,7 @@ $('.selected-view').on('click', '.show-form', function() {
       $('.intro-view').empty()
       $('#selectedBooks').show()
       $('#selectedBooks .jumbotron').show()
-      $('#totalPagination').html(NUMBER_OF_RESPONSES/selectedBooks.length)
+      $('#totalPagination').html(Math.round(NUMBER_OF_RESPONSES/selectedBooks.length))
       $('#currentPagination').html(currentPagination)
       $('#submitFirstForm').show()
       $('#calculatedTagName').html(tagArray[currentIndex].tag)
@@ -138,7 +138,7 @@ $('#submitForm').click(function() {
       data: $('form#tagRangeForm').serialize() + "&tag=" + tagArray[currentIndex].tag + "&uid=" + localStorage.getItem('uid'),
       success: function(data) {
         if (data.success === true) {
-          let messageIndex = NUMBER_OF_RESPONSES/selectedBooks.length - 1
+          let messageIndex = Math.round(NUMBER_OF_RESPONSES/selectedBooks.length) - 1
           if (currentIndex > messageIndex) {
             // show message hide pagination
             $('.message').show()

@@ -81,7 +81,6 @@ app.post('/searchBookFromTerm', function(req, res){
 // calculates the tag for selected books
 app.post('/calculateTag', function(req, res) {
 	const obj = req.body
-  console.log(obj)
 	const bookArray = obj.selectedBooks 
   const turkId = obj.turkId
   var uid;
