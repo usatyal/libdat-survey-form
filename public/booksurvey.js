@@ -102,9 +102,9 @@ $('.selected-view').on('click', '.show-form', function() {
       $('#totalPagination').html(Math.round(NUMBER_OF_RESPONSES/selectedBooks.length))
       $('#currentPagination').html(currentPagination)
       $('#submitFirstForm').show()
-      $('#calculatedTagName').html(tagArray[currentIndex].tag)
+      $('#calculatedTagName').html(`<a target="_blank" href="https://www.google.com/search?q=${tagArray[currentIndex].tag}">${tagArray[currentIndex].tag} </a>`)
       $.each(selectedBooks, function(i) {
-        $('.form-wrapper').append(`<h3> ${selectedBooks[i]} </h3>
+        $('.form-wrapper').append(`<h3> <a target="_blank" href="https://www.google.com/search?q=${selectedBooks[i]}">${selectedBooks[i]} </a> </h3>
            <div class='form-group'>
              <label class='radio-inline'>
                <input type='radio' name='${selectedBooks[i]}' value='1' required>1
