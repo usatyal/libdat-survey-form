@@ -13,6 +13,19 @@ let turkId = ''
 
 $('.remainingNum').html(NUMBER_OF_BOOKS)
 
+$('#turkId').on('keypress', function(e) {
+  if(e.which == 13) {
+    if (!$('form#turkForm')[0].checkValidity()) {
+      showValidationError()
+      return
+    }
+    e.preventDefault()
+    turkId = $('#turkId').val()
+    $('.turk-id-row').hide()
+    $('.search-book-row').show()
+  }
+})
+
 $('#inputBookName').on('keypress', function(e) {
   if (e.which == 13) {
     if (!$('form#searchTermForm')[0].checkValidity()) {
@@ -20,23 +33,42 @@ $('#inputBookName').on('keypress', function(e) {
       return
     }
     e.preventDefault()
+    // to prevent multiple ajax request
+    var that = $(this);
+    if (that.data('requestRunning')) {
+        return;
+    }
+    that.data('requestRunning', true);
+
     $('#books div.checkbox').remove()
     $.ajax({
       url: 'searchBookFromTerm',
       type: 'post',
-      data: $('form#searchTermForm').serialize(),
+      data: $('form#searchTermForm').serialize()+ "&turkId=" + turkId,
       success: function(data) {
         $('#instruction').show()
         $.each(data.resultBookList, function(i) {
-          $('#books').prepend(`<div class='checkbox'>
+          if (selectedBooks.includes(data.resultBookList[i])) {
+            $('#books').append(`<div class='checkbox'>
+            <label>
+              <input type='checkbox' name='bookNames' value="${data.resultBookList[i]}" checked>
+              ${data.resultBookList[i]} 
+              </label>
+            </div>`)
+          } else {
+            $('#books').append(`<div class='checkbox'>
             <label>
               <input type='checkbox' name='bookNames' value="${data.resultBookList[i]}">
               ${data.resultBookList[i]} 
               </label>
-          </div>`)
+            </div>`)
+          }
         })
         $('#submitSelectedBooks').show()
         $('#noBook').show()
+      },
+      complete: function() {
+        that.data('requestRunning', false);
       }
     })
   }
@@ -66,7 +98,8 @@ $('#books').on('click', 'input[name="bookNames"]', function() {
       $('ul.selected-books').append(`<li> ${selectedBooks[i]} </li>`)
     })
   } else {
-    selectedBooks.pop(this.value)
+    // remove item from array and regenerate the list
+    selectedBooks = selectedBooks.filter(item => item !== this.value)
     $('.selectedNum').html(selectedBooks.length)
     $('.remainingNum').html(NUMBER_OF_BOOKS - selectedBooks.length)
     $('ul.selected-books').empty()
@@ -83,8 +116,7 @@ $('.selected-view').on('click', '.show-form', function() {
     alert ('Sorry, you cannot take this survey. Your Turk ID will be banned. If you take this survey again, we will reject your answers.')
     return false
   }
-  // saving this to use in randomcode
-  turkId = $('#turkId').val()
+
   $.ajax({
     url: 'calculateTag',
     type: 'post',
@@ -99,7 +131,7 @@ $('.selected-view').on('click', '.show-form', function() {
       $('.intro-view').empty()
       $('#selectedBooks').show()
       $('#selectedBooks .jumbotron').show()
-      $('#totalPagination').html(Math.round(NUMBER_OF_RESPONSES/selectedBooks.length))
+      $('#totalPagination').html(Math.ceil(NUMBER_OF_RESPONSES/selectedBooks.length))
       $('#currentPagination').html(currentPagination)
       $('#submitFirstForm').show()
       $('#calculatedTagName').html(`<a target="_blank" href="https://www.google.com/search?q=${tagArray[currentIndex].tag}">${tagArray[currentIndex].tag} </a>`)
@@ -122,7 +154,7 @@ $('.selected-view').on('click', '.show-form', function() {
                <input type='radio' name='${selectedBooks[i]}' value='5'>5
              </label>
              <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]}' value='-1'>Not sure
+               <input type='radio' name='${selectedBooks[i]}' value='-1' checked>Not sure
              </label>
            </div>`)
       })
@@ -138,7 +170,7 @@ $('#submitForm').click(function() {
       data: $('form#tagRangeForm').serialize() + "&tag=" + tagArray[currentIndex].tag + "&uid=" + localStorage.getItem('uid'),
       success: function(data) {
         if (data.success === true) {
-          let messageIndex = Math.round(NUMBER_OF_RESPONSES/selectedBooks.length) - 1
+          let messageIndex = Math.ceil(NUMBER_OF_RESPONSES/selectedBooks.length) - 1
           if (currentIndex > messageIndex) {
             // show message hide pagination
             $('.message').show()
@@ -152,6 +184,7 @@ $('#submitForm').click(function() {
           $('#calculatedTagName').html(tagArray[currentIndex].tag)
           // reset the form
           $('#tagRangeForm').trigger("reset")
+          $("html, body").animate({ scrollTop: 0 }, "slow");
         }
       }
     })
