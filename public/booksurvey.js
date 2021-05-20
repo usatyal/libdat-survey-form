@@ -69,6 +69,10 @@ $('#inputBookName').on('keypress', function(e) {
       data: $('form#searchTermForm').serialize()+ "&turkId=" + turkId,
       success: function(data) {
         $('#instruction').show()
+        // hide if already exist then append again
+        if($('#showAllBooks').length) {
+          $('#showAllBooks').remove()
+        }
         if (data.resultBookList.length > NUMBER_OF_ITEMS_IN_FIRST_FOLD) {
           totalBookList = data.resultBookList
           resultBookList = data.resultBookList.slice(0, NUMBER_OF_ITEMS_IN_FIRST_FOLD)
@@ -91,7 +95,7 @@ $('#inputBookName').on('keypress', function(e) {
 $('#books').on('click', '#showAllBooks', function() {
   $('#books div.checkbox').remove()
   displayBooks(totalBookList)
-  $('#showAllBooks').hide()
+  $('#showAllBooks').remove()
 })
 
 $('#books').on('click', 'input[name="bookNames"]', function() {
