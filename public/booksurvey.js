@@ -1,8 +1,29 @@
 NUMBER_OF_BOOKS = 10
 NUMBER_OF_RESPONSES = 30
+NUMBER_OF_ITEMS_IN_FIRST_FOLD = 10
 
 function showValidationError(){
   alert("Please check all the fields")
+}
+
+function displayBooks (bookArray) {
+  $.each(bookArray, function(i) {
+    if (selectedBooks.includes(bookArray[i])) {
+      $('#books').prepend(`<div class='checkbox'>
+        <label>
+        <input type='checkbox' name='bookNames' value="${bookArray[i]}" checked>
+        ${bookArray[i]} 
+        </label>
+        </div>`)
+    } else {
+      $('#books').prepend(`<div class='checkbox'>
+        <label>
+        <input type='checkbox' name='bookNames' value="${bookArray[i]}">
+        ${bookArray[i]} 
+        </label>
+        </div>`)
+    }
+  })
 }
 
 let selectedBooks = []
@@ -10,20 +31,21 @@ let tagArray = []
 let currentIndex = 1
 let currentPagination = 1
 let turkId = ''
+let resultBookList = []
+let totalBookList = []
 
 $('.remainingNum').html(NUMBER_OF_BOOKS)
 
-$('#turkId').on('keypress', function(e) {
-  if(e.which == 13) {
-    if (!$('form#turkForm')[0].checkValidity()) {
-      showValidationError()
-      return
-    }
-    e.preventDefault()
-    turkId = $('#turkId').val()
-    $('.turk-id-row').hide()
-    $('.search-book-row').show()
+$('#submitTurkId').on('click', function(e) {
+  if (!$('form#turkForm')[0].checkValidity()) {
+    showValidationError()
+    return
   }
+  e.preventDefault()
+
+  turkId = $('#turkId').val()
+  $('.turk-id-row').hide()
+  $('.search-book-row').show()
 })
 
 $('#inputBookName').on('keypress', function(e) {
@@ -47,23 +69,14 @@ $('#inputBookName').on('keypress', function(e) {
       data: $('form#searchTermForm').serialize()+ "&turkId=" + turkId,
       success: function(data) {
         $('#instruction').show()
-        $.each(data.resultBookList, function(i) {
-          if (selectedBooks.includes(data.resultBookList[i])) {
-            $('#books').append(`<div class='checkbox'>
-            <label>
-              <input type='checkbox' name='bookNames' value="${data.resultBookList[i]}" checked>
-              ${data.resultBookList[i]} 
-              </label>
-            </div>`)
-          } else {
-            $('#books').append(`<div class='checkbox'>
-            <label>
-              <input type='checkbox' name='bookNames' value="${data.resultBookList[i]}">
-              ${data.resultBookList[i]} 
-              </label>
-            </div>`)
-          }
-        })
+        if (data.resultBookList.length > NUMBER_OF_ITEMS_IN_FIRST_FOLD) {
+          totalBookList = data.resultBookList
+          resultBookList = data.resultBookList.slice(0, NUMBER_OF_ITEMS_IN_FIRST_FOLD)
+          $('#books').append(`<button type='button' class='btn btn-primary' id='showAllBooks'>Show all</button>`)
+        } else {
+          resultBookList = data.resultBookList
+        }
+        displayBooks(resultBookList)
         $('#submitSelectedBooks').show()
         $('#noBook').show()
       },
@@ -72,6 +85,13 @@ $('#inputBookName').on('keypress', function(e) {
       }
     })
   }
+})
+
+// show remaining books if more than 10
+$('#books').on('click', '#showAllBooks', function() {
+  $('#books div.checkbox').remove()
+  displayBooks(totalBookList)
+  $('#showAllBooks').hide()
 })
 
 $('#books').on('click', 'input[name="bookNames"]', function() {
@@ -181,7 +201,7 @@ $('#submitForm').click(function() {
           currentPagination = currentPagination + 1
           // change the pagination and tag
           $('#currentPagination').html(currentPagination)
-          $('#calculatedTagName').html(tagArray[currentIndex].tag)
+          $('#calculatedTagName').html(`<a target="_blank" href="https://www.google.com/search?q=${tagArray[currentIndex].tag}">${tagArray[currentIndex].tag} </a>`)
           // reset the form
           $('#tagRangeForm').trigger("reset")
           $("html, body").animate({ scrollTop: 0 }, "slow");

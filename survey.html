@@ -22,10 +22,12 @@
     <div class="row" style="margin-top: 50px;">
       <div class="col-md-8 col-md-offset-2 intro-view">
         <div class="row turk-id-row">
-           <div class="col-md-6 text-center">
+           <div class="col-md-6">
              <form id="turkForm">
               <div class="form-group">
-                <input type="text" class="form-control" id="turkId" name="turkId" placeholder="Please enter your amazon turk id and press enter" required>
+                <input type="text" class="form-control" id="turkId" name="turkId" placeholder="Please enter your amazon turk id and press next" required>
+                <br>
+                <button id="submitTurkId" class="btn btn-primary">Next</button>
               </div>
             </form>
           </div>
@@ -44,7 +46,7 @@
               </form>
             </div>
           </div>
-          <div class="col-md-6 selected-view" id="submitSelectedBooks" style="display: none;">
+          <div class="col-md-6 selected-view" id="submitSelectedBooks">
            <h3>You have selected <span class="selectedNum">0</span> books, please select <span class="remainingNum"></span> books </h3>
            <ul class="selected-books">
            </ul>
