@@ -73,14 +73,22 @@ app.post('/searchBookFromTerm', function(req, res){
   })
 })
 
+function getBookIds(bookArray){
+  ids = []
+  bookArray.forEach(element => {
+    ids.push(element["id"])
+  })
+  return ids;
+}
+
 // calculates the tag for selected books
 app.post('/calculateTag', function(req, res) {
 	const obj = req.body
-	const bookArray = obj.selectedBooks 
+	const bookArray = getBookIds(obj.selectedBooks)
   const turkId = obj.turkId
   var uid;
   // same query for calculating tag and inserting the bookselection
-	const query = 'select tag, abs(max(score) - min(score)) as absoluteDifference from tags where title in (?) group by tag order by absoluteDifference desc; INSERT INTO bookselection (turkid, bookselection) VALUES (?, ?)'
+	const query = 'select tag, tag_id, abs(max(score) - min(score)) as absoluteDifference from score, tag where score.tag_id = tag.id and book_id in (?) group by tag_id order by absoluteDifference desc; INSERT INTO bookselection (turkid, bookselection) VALUES (?, ?)'
   
   con.query(query, [bookArray, turkId, bookArray.toString()], function (err, result) {
     if (!err) {
@@ -91,12 +99,13 @@ app.post('/calculateTag', function(req, res) {
 
 // submits form
 app.post('/submitSurvey', function(req,res){
+    console.log(req.body)
   const obj = req.body
   // saved the tag in a variable and removed it from the obj so that it can be iterated
-  const tag = obj.tag
+  const tag_id = obj.tag_id
   const uid = obj.uid
   const comment = obj.comment
-  delete obj.tag
+  delete obj.tag_id
   delete obj.uid
   delete obj.comment
 
@@ -112,7 +121,7 @@ app.post('/submitSurvey', function(req,res){
   async function insertData () {
     for(const i in obj){
      try {
-       await con.query('INSERT INTO surveyresponse (uid, title, tag, score) VALUES (?, ?, ?, ?)',[uid, i, tag, obj[i]], function(err, result){
+       await con.query('INSERT INTO surveyresponse (uid, title, tag, score) VALUES (?, ?, ?, ?)',[uid, i, tag_id, obj[i]], function(err, result){
        }) 
       } catch (err) {
         console.log(err)

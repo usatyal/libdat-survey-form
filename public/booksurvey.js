@@ -38,7 +38,7 @@ function displayBooks () {
 
 let selectedBooks = []
 let tagArray = []
-let currentIndex = 1
+let currentIndex = 0
 let displayedBooks = []
 //let currentPagination = 1
 let turkId = ''
@@ -171,25 +171,25 @@ $('.selected-view').on('click', '.show-form', function() {
       $('#submitFirstForm').show()
       $('#calculatedTagName').html(`<a target="_blank" href="https://www.google.com/search?q=${tagArray[currentIndex].tag}">${tagArray[currentIndex].tag} </a>`)
       $.each(selectedBooks, function(i) {
-        $('.form-wrapper').append(`<h3> <a target="_blank" href="https://www.google.com/search?q=${selectedBooks[i]}">${selectedBooks[i]} </a> </h3>
+        $('.form-wrapper').append(`<h3> <a target="_blank" href="${selectedBooks[i]["url"]}">${selectedBooks[i]["title"]} </a> </h3>
            <div class='form-group'>
              <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]}' value='1' required>1
+               <input type='radio' name='${selectedBooks[i]["id"]}' value='1' required>1
              </label>
              <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]}' value='2'>2
+               <input type='radio' name='${selectedBooks[i]["id"]}' value='2'>2
              </label>
              <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]}' value='3'>3
+               <input type='radio' name='${selectedBooks[i]["id"]}' value='3'>3
              </label>
              <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]}' value='4'>4
+               <input type='radio' name='${selectedBooks[i]["id"]}' value='4'>4
              </label>
              <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]}' value='5'>5
+               <input type='radio' name='${selectedBooks[i]["id"]}' value='5'>5
              </label>
              <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]}' value='-1' checked>Not sure
+               <input type='radio' name='${selectedBooks[i]["id"]}' value='-1' checked>Not sure
              </label>
            </div>`)
       })
@@ -202,7 +202,7 @@ $('#submitForm').click(function() {
     $.ajax({
       url: 'submitSurvey',
       type: 'post',
-      data: $('form#tagRangeForm').serialize() + "&tag=" + tagArray[currentIndex].tag + "&uid=" + localStorage.getItem('uid'),
+      data: $('form#tagRangeForm').serialize() + "&tag_id=" + tagArray[currentIndex]["tag_id"] + "&uid=" + localStorage.getItem('uid'),
       success: function(data) {
         if (data.success === true) {
           let messageIndex = Math.ceil(NUMBER_OF_RESPONSES/selectedBooks.length) - 1
