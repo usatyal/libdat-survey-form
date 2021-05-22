@@ -40,8 +40,8 @@ let selectedBooks = []
 let tagArray = []
 let currentIndex = 0
 let displayedBooks = []
-//let currentPagination = 1
 let turkId = ''
+let UID = 0
 
 $('.remainingNum').html(NUMBER_OF_BOOKS)
 
@@ -53,6 +53,16 @@ $('#submitTurkId').on('click', function(e) {
   e.preventDefault()
 
   turkId = $('#turkId').val()
+
+  $.ajax({
+      url: 'login',
+      type: 'post',
+      data: "turkId=" + turkId,
+      success: function(data) {
+        UID = data.uid
+      }
+    })
+
   $('.turk-id-row').hide()
   $('.search-book-row').show()
 })
@@ -75,7 +85,7 @@ $('#inputBookName').on('keypress', function(e) {
     $.ajax({
       url: 'searchBookFromTerm',
       type: 'post',
-      data: $('form#searchTermForm').serialize()+ "&turkId=" + turkId,
+      data: $('form#searchTermForm').serialize()+ "&uid=" + UID,
       success: function(data) {
         $('#instruction').show()
         // hide if already exist then append again
@@ -157,17 +167,15 @@ $('.selected-view').on('click', '.show-form', function() {
     type: 'post',
     data: {
       selectedBooks: selectedBooks,
-      turkId: turkId
+      uid: UID
     },
     success: function(data) {
       tagArray = data.result
-      // uid is set in this point and it will remain same
-      localStorage.setItem('uid', data.uid)
       $('.intro-view').empty()
       $('#selectedBooks').show()
       $('#selectedBooks .jumbotron').show()
       $('#totalPagination').html(Math.ceil(NUMBER_OF_RESPONSES/selectedBooks.length))
-      //$('#currentPagination').html(currentPagination)
+      $('#currentPagination').html(currentIndex + 1)
       $('#submitFirstForm').show()
       $('#calculatedTagName').html(`<a target="_blank" href="https://www.google.com/search?q=${tagArray[currentIndex].tag}">${tagArray[currentIndex].tag} </a>`)
       $.each(selectedBooks, function(i) {
@@ -202,20 +210,19 @@ $('#submitForm').click(function() {
     $.ajax({
       url: 'submitSurvey',
       type: 'post',
-      data: $('form#tagRangeForm').serialize() + "&tag_id=" + tagArray[currentIndex]["tag_id"] + "&uid=" + localStorage.getItem('uid'),
+      data: $('form#tagRangeForm').serialize() + "&tag_id=" + tagArray[currentIndex]["tag_id"] + "&uid=" + UID,
       success: function(data) {
         if (data.success === true) {
-          let messageIndex = Math.ceil(NUMBER_OF_RESPONSES/selectedBooks.length) - 1
-          if (currentIndex > messageIndex) {
+          currentIndex = currentIndex + 1
+          let messageIndex = Math.ceil(NUMBER_OF_RESPONSES/selectedBooks.length)
+          if (currentIndex + 1 > messageIndex) {
             // show message hide pagination
             $('.message').show()
             $('.jumbotron h2').hide()
-            $('.randomcode').html(localStorage.getItem('uid') + turkId)
+            $('.randomcode').html(UID + turkId)
           }
-          currentIndex = currentIndex + 1
-          //currentPagination = currentPagination + 1
           // change the pagination and tag
-          //$('#currentPagination').html(currentPagination)
+          $('#currentPagination').html(currentIndex + 1)
           $('#calculatedTagName').html(`<a target="_blank" href="https://www.google.com/search?q=${tagArray[currentIndex].tag}">${tagArray[currentIndex].tag} </a>`)
           // reset the form
           $('#tagRangeForm').trigger("reset")

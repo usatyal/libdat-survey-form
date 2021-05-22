@@ -25,7 +25,7 @@
            <div class="col-md-6">
              <form id="turkForm">
               <div class="form-group">
-                <input type="text" class="form-control" id="turkId" name="turkId" placeholder="Please enter your amazon turk id and press next" required>
+                <input type="text" class="form-control" id="turkId" maxlength="100" name="turkId" placeholder="Please enter your amazon turk id and press next" required>
                 <br>
                 <button id="submitTurkId" class="btn btn-primary">Next</button>
               </div>
@@ -74,7 +74,7 @@
             </div>
             <label> Please let us know if there is anything wrong with the survey </label> 
             <br>
-            <textarea rows='4' cols='50' name='comment'></textarea>
+            <textarea rows='4' cols='50' name='comment' maxlength="255"></textarea>
           </div>
           <button type="submit" id="submitForm" class="btn btn-primary">Submit & Next</button>
         </form>
