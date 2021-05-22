@@ -21,10 +21,6 @@ var con = mysql.createConnection({
   multipleStatements : true
 })
 
-// load books
-const BOOKLIST_FOR_SEARCH = require('./public/names.js')
-const booklist_for_search = BOOKLIST_FOR_SEARCH.booklist_for_search 
-
 // to use jquery in node
 var jsdom = require('jsdom')
 const { JSDOM } = jsdom
@@ -66,16 +62,15 @@ app.post('/searchBookFromTerm', function(req, res){
      }
   }
 
-  insertSearchKey ()
+  insertSearchKey()
 
-  $.each(booklist_for_search, function(i) {
-    var rSearchTerm = new RegExp('\\b' + searchTerm + '\\b','i')
-    if (booklist_for_search[i].match(rSearchTerm)) {
-      keywordIndex = i  // grouping keyword is in
-      resultBookList.push(booklist_for_search[i]) //debug
+  const query = 'select id, title, url from book where REGEXP_LIKE(title, N?) order by pop desc;'
+
+  con.query(query, ['\\b'+searchTerm+'\\b'], function (err, result) {
+    if (!err) {
+      res.send({resultBookList: result})
     }
-  }) 
-  res.send({resultBookList: resultBookList})
+  })
 })
 
 // calculates the tag for selected books

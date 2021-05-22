@@ -1,25 +1,35 @@
 NUMBER_OF_BOOKS = 10
 NUMBER_OF_RESPONSES = 30
-NUMBER_OF_ITEMS_IN_FIRST_FOLD = 10
+NUMBER_OF_ITEMS_IN_FIRST_FOLD = 5
 
 function showValidationError(){
   alert("Please check all the fields")
 }
 
-function displayBooks (bookArray) {
-  $.each(bookArray, function(i) {
-    if (selectedBooks.includes(bookArray[i])) {
+function isBookSelected(book) {
+  selected = false
+  selectedBooks.forEach(element => {
+    if(element["id"] === book["id"]) {
+      selected = true
+    }
+  })
+  return selected
+}
+
+function displayBooks () {
+  $.each(displayedBooks, function(i) {
+    if (isBookSelected(displayedBooks[i])) {
       $('#books').prepend(`<div class='checkbox'>
         <label>
-        <input type='checkbox' name='bookNames' value="${bookArray[i]}" checked>
-        ${bookArray[i]} 
+        <input type='checkbox' name='bookNames' value="${displayedBooks[i]["id"]}" checked>
+        ${displayedBooks[i]["title"]} 
         </label>
         </div>`)
     } else {
       $('#books').prepend(`<div class='checkbox'>
         <label>
-        <input type='checkbox' name='bookNames' value="${bookArray[i]}">
-        ${bookArray[i]} 
+        <input type='checkbox' name='bookNames' value="${displayedBooks[i]["id"]}">
+        ${displayedBooks[i]["title"]} 
         </label>
         </div>`)
     }
@@ -29,10 +39,9 @@ function displayBooks (bookArray) {
 let selectedBooks = []
 let tagArray = []
 let currentIndex = 1
-let currentPagination = 1
+let displayedBooks = []
+//let currentPagination = 1
 let turkId = ''
-let resultBookList = []
-let totalBookList = []
 
 $('.remainingNum').html(NUMBER_OF_BOOKS)
 
@@ -73,14 +82,8 @@ $('#inputBookName').on('keypress', function(e) {
         if($('#showAllBooks').length) {
           $('#showAllBooks').remove()
         }
-        if (data.resultBookList.length > NUMBER_OF_ITEMS_IN_FIRST_FOLD) {
-          totalBookList = data.resultBookList
-          resultBookList = data.resultBookList.slice(0, NUMBER_OF_ITEMS_IN_FIRST_FOLD)
-          $('#books').append(`<button type='button' class='btn btn-primary' id='showAllBooks'>Show all</button>`)
-        } else {
-          resultBookList = data.resultBookList
-        }
-        displayBooks(resultBookList)
+        displayedBooks = data["resultBookList"]
+        displayBooks()
         $('#submitSelectedBooks').show()
         $('#noBook').show()
       },
@@ -92,23 +95,37 @@ $('#inputBookName').on('keypress', function(e) {
 })
 
 // show remaining books if more than 10
-$('#books').on('click', '#showAllBooks', function() {
+/*$('#books').on('click', '#showAllBooks', function() {
   $('#books div.checkbox').remove()
   displayBooks(totalBookList)
   $('#showAllBooks').remove()
-})
+})*/
+
+function getBookById(id) {
+  book = {}
+  displayedBooks.forEach(element => {
+    if(element["id"] === id) {
+      book = element
+      return;
+    }
+  })
+  return book;
+}
+
+function updateSelectedBooks(){
+  $('ul.selected-books').empty()
+    $.each(selectedBooks, function(i) {
+      $('ul.selected-books').append(`<li> <a target="_blank" href="${selectedBooks[i]["url"]}">${selectedBooks[i]["title"]}</a></li>`)
+    })
+}
 
 $('#books').on('click', 'input[name="bookNames"]', function() {
   if (this.checked === true) {
-    if (selectedBooks.includes(this.value)) {
-      alert ('The book is already in your selected list. Please select another.')
-      return false
-    }
     if (selectedBooks.length === NUMBER_OF_BOOKS) {
       alert(`You have already selected ${NUMBER_OF_BOOKS} books`)
       return false
     }
-    selectedBooks.push(this.value)
+    selectedBooks.push(getBookById(this.value))
     if (selectedBooks.length >= 1) {
       $('.show-form').html('I CAN\'T FIND MORE BOOKS')
     }
@@ -117,19 +134,13 @@ $('#books').on('click', 'input[name="bookNames"]', function() {
     }
     $('.selectedNum').html(selectedBooks.length)
     $('.remainingNum').html(NUMBER_OF_BOOKS - selectedBooks.length)
-    $('ul.selected-books').empty()
-    $.each(selectedBooks, function(i) {
-      $('ul.selected-books').append(`<li> ${selectedBooks[i]} </li>`)
-    })
+    updateSelectedBooks()
   } else {
     // remove item from array and regenerate the list
-    selectedBooks = selectedBooks.filter(item => item !== this.value)
+    selectedBooks = selectedBooks.filter(item => item["id"] !== this.value)
     $('.selectedNum').html(selectedBooks.length)
     $('.remainingNum').html(NUMBER_OF_BOOKS - selectedBooks.length)
-    $('ul.selected-books').empty()
-    $.each(selectedBooks, function(i) {
-      $('ul.selected-books').append(`<li> ${selectedBooks[i]} </li>`)
-    })
+    updateSelectedBooks()
   }
 })
 
@@ -156,7 +167,7 @@ $('.selected-view').on('click', '.show-form', function() {
       $('#selectedBooks').show()
       $('#selectedBooks .jumbotron').show()
       $('#totalPagination').html(Math.ceil(NUMBER_OF_RESPONSES/selectedBooks.length))
-      $('#currentPagination').html(currentPagination)
+      //$('#currentPagination').html(currentPagination)
       $('#submitFirstForm').show()
       $('#calculatedTagName').html(`<a target="_blank" href="https://www.google.com/search?q=${tagArray[currentIndex].tag}">${tagArray[currentIndex].tag} </a>`)
       $.each(selectedBooks, function(i) {
@@ -202,9 +213,9 @@ $('#submitForm').click(function() {
             $('.randomcode').html(localStorage.getItem('uid') + turkId)
           }
           currentIndex = currentIndex + 1
-          currentPagination = currentPagination + 1
+          //currentPagination = currentPagination + 1
           // change the pagination and tag
-          $('#currentPagination').html(currentPagination)
+          //$('#currentPagination').html(currentPagination)
           $('#calculatedTagName').html(`<a target="_blank" href="https://www.google.com/search?q=${tagArray[currentIndex].tag}">${tagArray[currentIndex].tag} </a>`)
           // reset the form
           $('#tagRangeForm').trigger("reset")
