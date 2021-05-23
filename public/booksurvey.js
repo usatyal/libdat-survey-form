@@ -11,6 +11,19 @@ $.ajaxSetup({
   }
 })
 
+function showPagination (num, searchKey) {
+ if($('#pagination li').length) {
+  $('#pagination li').remove()
+ }
+ if (num === 1 ) {
+  return
+ } else {
+  for (i = 1; i <= num; i++) {
+    $('#pagination').append(`<li class='page-item'><a class='page-link' data-search='' data-pagenum='${i}'>${i}</a></li>`)
+  }
+ }
+}
+
 function showValidationError(){
   alert("Please check all the fields")
 }
@@ -90,9 +103,10 @@ $('#inputBookName').on('keypress', function(e) {
     e.preventDefault()
     // to prevent multiple ajax request
     var that = $(this);
-    if (that.data('requestRunning')) {
-        return;
+    if (that.data('requestRunning')){
+      return;
     }
+    
     that.data('requestRunning', true);
 
     $('#books div.checkbox').remove()
@@ -101,18 +115,20 @@ $('#inputBookName').on('keypress', function(e) {
       type: 'post',
       data: $('form#searchTermForm').serialize()+ "&uid=" + UID,
       success: function(data) {
+        console.log(data)
         $('#recs_block').show()
-        // hide if already exist then append again
-        if($('#showAllBooks').length) {
-          $('#showAllBooks').remove()
-        }
         displayedBooks = data["resultBookList"]
+
         displayBooks()
+        
         $('#submitSelectedBooks').show()
         $('#noBook').show()
+
+        showPagination(data.paginationNum)
       },
       complete: function() {
         that.data('requestRunning', false);
+        $("#loading").hide()
       }
     })
   }

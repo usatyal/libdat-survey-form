@@ -1,4 +1,6 @@
 // app.js
+NUMBER_OF_ITEMS_IN_FIRST_FOLD = 5
+
 require('dotenv').config()
 let express = require('express')
 let app = express()
@@ -93,7 +95,7 @@ app.post('/searchBookFromTerm', function(req, res){
 
   con.query(query, ['\\b'+searchTerm+'\\b'], function (err, result) {
     if (!err) {
-      res.send({resultBookList: result})
+      res.send({resultBookList: result.slice(0, NUMBER_OF_ITEMS_IN_FIRST_FOLD), paginationNum: Math.ceil(result.length/NUMBER_OF_ITEMS_IN_FIRST_FOLD)})
     }
   })
 })

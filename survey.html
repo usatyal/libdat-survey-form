@@ -6,7 +6,6 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
   <style type="text/css">
-    /*#e5e4f4,#fefefe,#ffffff*/
     #selectedBooks {
       background-color: #e5e4f4;
       padding: 20px;
@@ -23,6 +22,9 @@
       top:50%; 
       left:50%; 
       padding:2px;
+    }
+    .page-link {
+      cursor: pointer;
     }
   </style>
 </head>
@@ -57,6 +59,11 @@
               </div>
               <form id="books">
               </form>
+              <nav aria-label="Page navigation example">
+                <ul class="pagination" id="pagination">
+                  <!-- pagination -->
+                </ul>
+              </nav>
             </div>
           </div>
           <div class="col-md-6 selected-view" id="submitSelectedBooks">
