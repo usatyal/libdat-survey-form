@@ -45,7 +45,7 @@ app.get('/booksurvey', function(req, res) {
     res.sendFile(path.join(__dirname, "/survey.html"))
 })
 
-// submits form
+// the user inputs turk id
 app.post('/login', function(req,res){
   const obj = req.body
   const query = 'INSERT INTO user (turkid) VALUES (?)'
@@ -55,7 +55,18 @@ app.post('/login', function(req,res){
      res.send({uid: result.insertId})
     }
 	})
+})
 
+// the user selects no books
+app.post('/noBooks', function(req,res){
+  const obj = req.body
+  const query = 'INSERT INTO exclusion (turkid, uid, no_books, fake, wrong) VALUES (?,?,?,?,?)'
+
+  con.query(query, [obj.turkId, obj.uid, true, false, false], function (err, result) {
+    if (err) {
+      console.log(err)
+    }
+	})
 })
 
 // survery book search

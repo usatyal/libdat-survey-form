@@ -155,10 +155,16 @@ $('#books').on('click', 'input[name="bookNames"]', function() {
 })
 
 $('.selected-view').on('click', '.show-form', function() {
-  // throw out from the survey is none selected
   if (selectedBooks.length < 1) {
-    // TODO: implement ajax request?
-    alert ('Sorry, you cannot take this survey. Your Turk ID will be banned. If you take this survey again, we will reject your answers.')
+    $.ajax({
+    url: 'noBooks',
+    type: 'post',
+    data: {
+      turkId: turkId,
+      uid: UID
+    }
+    })
+    alert ('Sorry, you cannot take this survey. Your Turk ID is banned. If you take this survey again, we will reject your answers.')
     return false
   }
 
