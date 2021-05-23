@@ -137,10 +137,10 @@ $('#books').on('click', 'input[name="bookNames"]', function() {
     }
     selectedBooks.push(getBookById(this.value))
     if (selectedBooks.length >= 1) {
-      $('.show-form').html('I CAN\'T FIND MORE BOOKS')
+      $('.show-form').html('I cannot find more books')
     }
     if (selectedBooks.length === NUMBER_OF_BOOKS) {
-      $('.show-form').html('NEXT')
+      $('.show-form').html('Next')
     }
     $('.selectedNum').html(selectedBooks.length)
     $('.remainingNum').html(NUMBER_OF_BOOKS - selectedBooks.length)
@@ -188,7 +188,7 @@ $('.selected-view').on('click', '.show-form', function() {
         $('.form-wrapper').append(`<h3> <a target="_blank" href="${selectedBooks[i]["url"]}">${selectedBooks[i]["title"]} </a> </h3>
            <div class='form-group'>
              <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]["id"]}' value='1' required>1
+               <input type='radio' name='${selectedBooks[i]["id"]}' value='1' required>1 (not at all)
              </label>
              <label class='radio-inline'>
                <input type='radio' name='${selectedBooks[i]["id"]}' value='2'>2
@@ -200,10 +200,10 @@ $('.selected-view').on('click', '.show-form', function() {
                <input type='radio' name='${selectedBooks[i]["id"]}' value='4'>4
              </label>
              <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]["id"]}' value='5'>5
+               <input type='radio' name='${selectedBooks[i]["id"]}' value='5'>5 (very strongly)
              </label>
              <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]["id"]}' value='-1' checked>Not sure
+               <input type='radio' name='${selectedBooks[i]["id"]}' value='-1' checked><b>Not sure</b>
              </label>
            </div>`)
       })

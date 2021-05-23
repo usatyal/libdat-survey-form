@@ -25,6 +25,7 @@
            <div class="col-md-6">
              <form id="turkForm">
               <div class="form-group">
+                  <p>By entering this survey, you agree that your data will be stored, processed and shared publicly.</p>
                 <input type="text" class="form-control" id="turkId" maxlength="100" name="turkId" placeholder="Please enter your amazon turk id and press next" required>
                 <br>
                 <button id="submitTurkId" class="btn btn-primary">Next</button>
@@ -50,7 +51,7 @@
            <h3>You have selected <span class="selectedNum">0</span> books, please select <span class="remainingNum"></span> books </h3>
            <ul class="selected-books">
            </ul>
-           <button class="btn btn-primary show-form">NO BOOKS</button>
+           <button class="btn btn-primary show-form">I cannot find any books I read</button>
          </div>	
        </div>
      </div>
@@ -60,19 +61,19 @@
       <div class="jumbotron">
       <h2>Page <span id="currentPagination"></span> of <span id="totalPagination"></span></h2>
       <h3>
-        On a scale of 1-5 (1 = not at all, 5 = very strong and not sure if you are not sure about the answer), how strongly does the tag 
+        On a scale of 1-5, how strongly does the tag
         <span id="calculatedTagName" style="font-weight: bold; font-style: italic;"></span> 
         apply to these books?
       </h3>
       </div>
       <!-- When you click this button, trigger the submit event on this form. -->
-      <p class="message" style="display: none;">Thank you for taking part in the survey. Your random code for amazon turk is:<b> <span class="randomcode"></span></b>. You have already filled up the for for sufficient times. If you want you can continue filling up the form.</p>
+      <p class="message" style="display: none;">Thank you for taking part in this survey. Your code for amazon turk is:<b> <span class="randomcode"></span></b>. You have already provided enough information. However, we will appreciate if you continue answering questions. Your answers will help us build better software.</p>
         <form id="tagRangeForm">
           <div class="form-group">
             <div class="form-wrapper">
               <!-- Form genereted from js -->
             </div>
-            <label> Please let us know if there is anything wrong with the survey </label> 
+            <label> Please share any additional thoughts or let us know if there is anything wrong with the survey (optional): </label>
             <br>
             <textarea rows='4' cols='50' name='comment' maxlength="255"></textarea>
           </div>
