@@ -19,7 +19,7 @@ function showPagination (num, searchKey) {
   return
  } else {
   for (i = 1; i <= num; i++) {
-    $('#pagination').append(`<li class='page-item'><a class='page-link' data-search='' data-pagenum='${i}'>${i}</a></li>`)
+    $('#pagination').append(`<li class='page-item'><a class='page-link' data-search='${searchKey}' data-pagenum='${i}'>${i}</a></li>`)
   }
  }
 }
@@ -64,6 +64,7 @@ let displayedBooks = []
 let turkId = ''
 let UID = 0
 let RECS = []
+let displayedBooksWithRecs = []
 
 $('.remainingNum').html(NUMBER_OF_BOOKS)
 
@@ -100,6 +101,8 @@ $('#inputBookName').on('keypress', function(e) {
       showValidationError()
       return
     }
+
+    var searchKey = $('#inputBookName').val()
     e.preventDefault()
     // to prevent multiple ajax request
     var that = $(this);
@@ -115,16 +118,15 @@ $('#inputBookName').on('keypress', function(e) {
       type: 'post',
       data: $('form#searchTermForm').serialize()+ "&uid=" + UID,
       success: function(data) {
-        console.log(data)
         $('#recs_block').show()
-        displayedBooks = data["resultBookList"]
+        displayedBooks = data.resultBookList
 
         displayBooks()
         
         $('#submitSelectedBooks').show()
         $('#noBook').show()
 
-        showPagination(data.paginationNum)
+        showPagination(data.paginationNum, searchKey)
       },
       complete: function() {
         that.data('requestRunning', false);
@@ -132,6 +134,24 @@ $('#inputBookName').on('keypress', function(e) {
       }
     })
   }
+})
+
+// search from pagination
+$('#pagination').on('click', '.page-link', function() {
+  $.ajax({
+    url: 'searchFromPagination',
+    type: 'post',
+    data: 'searchKey=' + $(this).data('search') + '&pageNum=' + $(this).data('pagenum'),
+    success: function (data) {
+     displayedBooks = data.resultBookList
+     // display new set of books based on pagination and searchKey
+     // remove if exists
+     if($('#books .checkbox').length) {
+      $('#books .checkbox').remove()
+     }
+     displayBooks()
+    } 
+  })
 })
 
 function getBookById(id) {
@@ -152,7 +172,8 @@ function updateSelectedBooks(){
     })
 }
 
-$('#books').on('click', 'input[name="bookNames"]', function() {
+//TODO: modify getBookById() to accept the recs as well
+$('#books, #recs').on('click', 'input[name="bookNames"]', function() {
   if (this.checked === true) {
     if (selectedBooks.length === NUMBER_OF_BOOKS) {
       alert(`You have already selected ${NUMBER_OF_BOOKS} books`)
