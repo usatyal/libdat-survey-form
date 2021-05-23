@@ -152,7 +152,7 @@ app.post('/submitSurvey', function(req,res){
     }
   }
   
-  if( comment != "") {
+  if(comment != "") {
     insertComment()
   }
 

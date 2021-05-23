@@ -2,6 +2,15 @@ NUMBER_OF_BOOKS = 10
 NUMBER_OF_RESPONSES = 30
 NUMBER_OF_ITEMS_IN_FIRST_FOLD = 5
 
+$.ajaxSetup({
+  beforeSend:function(){
+    $("#loading").show()
+  },
+  complete:function(){
+    $("#loading").hide()
+  }
+})
+
 function showValidationError(){
   alert("Please check all the fields")
 }
@@ -109,13 +118,6 @@ $('#inputBookName').on('keypress', function(e) {
   }
 })
 
-// show remaining books if more than 10
-/*$('#books').on('click', '#showAllBooks', function() {
-  $('#books div.checkbox').remove()
-  displayBooks(totalBookList)
-  $('#showAllBooks').remove()
-})*/
-
 function getBookById(id) {
   book = {}
   displayedBooks.forEach(element => {
@@ -162,12 +164,12 @@ $('#books').on('click', 'input[name="bookNames"]', function() {
 $('.selected-view').on('click', '.show-form', function() {
   if (selectedBooks.length < 1) {
     $.ajax({
-    url: 'noBooks',
-    type: 'post',
-    data: {
-      turkId: turkId,
-      uid: UID
-    }
+      url: 'noBooks',
+      type: 'post',
+      data: {
+        turkId: turkId,
+        uid: UID
+      }
     })
     alert ('Sorry, you cannot take this survey. Your Turk ID is banned. If you take this survey again, we will reject your answers.')
     return false
