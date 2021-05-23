@@ -183,6 +183,7 @@ $('.selected-view').on('click', '.show-form', function() {
       $('#totalPagination').html(Math.ceil(NUMBER_OF_RESPONSES/selectedBooks.length))
       $('#currentPagination').html(currentIndex + 1)
       $('#submitFirstForm').show()
+      $('#tag_large').html(`<a target="_blank" href="https://www.google.com/search?q=${tagArray[currentIndex].tag}">${tagArray[currentIndex].tag} </a>`)
       $('#calculatedTagName').html(`<a target="_blank" href="https://www.google.com/search?q=${tagArray[currentIndex].tag}">${tagArray[currentIndex].tag} </a>`)
       $.each(selectedBooks, function(i) {
         $('.form-wrapper').append(`<h3> <a target="_blank" href="${selectedBooks[i]["url"]}">${selectedBooks[i]["title"]} </a> </h3>
