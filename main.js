@@ -48,11 +48,11 @@ app.get('/booksurvey', function(req, res) {
 // the user inputs turk id
 app.post('/login', function(req,res){
   const obj = req.body
-  const query = 'INSERT INTO user (turkid) VALUES (?)'
+  const query = 'INSERT INTO user (turkid) VALUES (?);select b.id, b.title, b.url, b.pop as pop, count(rs.book_id) as cnt from book b left join (select * from survey_response where score <> -1) rs on rs.book_id=b.id group by id order by cnt, pop limit 2;'
 
   con.query(query, [obj.turkId], function (err, result) {
     if (!err) {
-     res.send({uid: result.insertId})
+     res.send({uid: result[0].insertId, recs: result[1]})
     }
 	})
 })

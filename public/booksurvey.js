@@ -16,23 +16,22 @@ function isBookSelected(book) {
   return selected
 }
 
+function getSearchBookHtml(book, checked){
+  let checkedStr = ""
+  if(checked) {
+    checkedStr = "checked"
+  }
+  return `<div class='checkbox'>
+        <label>
+        <input type='checkbox' name='bookNames' value="${book["id"]}" ${checkedStr}>
+        ${book["title"]} 
+        </label>
+        </div>`
+}
+
 function displayBooks () {
   $.each(displayedBooks, function(i) {
-    if (isBookSelected(displayedBooks[i])) {
-      $('#books').prepend(`<div class='checkbox'>
-        <label>
-        <input type='checkbox' name='bookNames' value="${displayedBooks[i]["id"]}" checked>
-        ${displayedBooks[i]["title"]} 
-        </label>
-        </div>`)
-    } else {
-      $('#books').prepend(`<div class='checkbox'>
-        <label>
-        <input type='checkbox' name='bookNames' value="${displayedBooks[i]["id"]}">
-        ${displayedBooks[i]["title"]} 
-        </label>
-        </div>`)
-    }
+    $('#books').prepend(getSearchBookHtml(displayedBooks[i], isBookSelected(displayedBooks[i])))
   })
 }
 
@@ -42,6 +41,7 @@ let currentIndex = 0
 let displayedBooks = []
 let turkId = ''
 let UID = 0
+let RECS = []
 
 $('.remainingNum').html(NUMBER_OF_BOOKS)
 
@@ -60,6 +60,11 @@ $('#submitTurkId').on('click', function(e) {
       data: "turkId=" + turkId,
       success: function(data) {
         UID = data.uid
+        RECS = data.recs
+        RECS.forEach(book => {
+          $('#recs').append(getSearchBookHtml(book))
+          console.log(book)
+        })
       }
     })
 
@@ -87,7 +92,7 @@ $('#inputBookName').on('keypress', function(e) {
       type: 'post',
       data: $('form#searchTermForm').serialize()+ "&uid=" + UID,
       success: function(data) {
-        $('#instruction').show()
+        $('#recs_block').show()
         // hide if already exist then append again
         if($('#showAllBooks').length) {
           $('#showAllBooks').remove()
