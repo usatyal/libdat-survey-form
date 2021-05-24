@@ -26,6 +26,12 @@
     .page-link {
       cursor: pointer;
     }
+    #recs_block {
+      display: none;
+      border: 1px solid black;
+      padding: 5px;
+      background: #e9ecef;
+    }
   </style>
 </head>
 <body>
@@ -54,7 +60,7 @@
               </div>
             </form>
             <div id="book-list-select">
-              <div id="recs_block" class="jumbotron" style="solid;display: none;"><p>Recommendations:</p>
+              <div id="recs_block"><p>Recommendations:</p>
                 <div id="recs"></div>
               </div>
               <form id="books">
