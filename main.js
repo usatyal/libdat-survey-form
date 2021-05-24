@@ -161,6 +161,33 @@ app.post('/calculateTag', function(req, res) {
 	})
 })
 
+
+app.post('/trap', function(req,res){
+  const obj = req.body
+  banUser(false, false, true, obj)
+  // saved the tag in a variable and removed it from the obj so that it can be iterated
+  const tag_id = obj.tag_id
+  const uid = obj.uid
+  delete obj.tag_id
+  delete obj.uid
+  delete obj.comment
+  delete obj.turkId
+
+  async function insertData () {
+    for(const i in obj){
+     try {
+       await con.query('INSERT INTO trap (uid, book_id, tag_id, score) VALUES (?, ?, ?, ?)',[uid, i, tag_id, obj[i]], function(err, result){
+       })
+      } catch (err) {
+        console.log(err)
+     }
+    }
+  }
+  insertData()
+
+  res.send({success:true})
+})
+
 // submits form
 app.post('/submitSurvey', function(req,res){
   const obj = req.body

@@ -66,6 +66,7 @@ let displayedBooks = []
 let turkId = ''
 let UID = 0
 let RECS = []
+let trapState = true
 
 $('.remainingNum').html(NUMBER_OF_BOOKS)
 
@@ -99,7 +100,14 @@ $('#submitTurkId').on('click', function(e) {
     })
 
   $('.turk-id-row').hide()
-  $('.search-book-row').show()
+  //$('.search-book-row').show()
+  selectedBooks = [{id:"-10", title: "Fight Club by Chuck Palahniuk", url:"https://www.goodreads.com/book/show/36236124-fight-club"},
+    {id:"-11", title: "Harry Potter and the Sorcerer's Stone by J.K. Rowling", url:"https://www.goodreads.com/book/show/3.Harry_Potter_and_the_Sorcerer_s_Stone"},
+    {id:"-12", title: "Alice's Adventures in Wonderland / Through the Looking-Glass by Lewis Carroll", url:"https://www.goodreads.com/book/show/24213.Alice_s_Adventures_in_Wonderland_Through_the_Looking_Glass"}]
+  tagArray = [{"tag":"for kids", "id":-100}]
+  currentIndex = 0
+  trapState = true
+  showSurveyPage()
 })
 
 $('#inputBookName').on('keypress', function(e) {
@@ -224,6 +232,47 @@ function isFakeBookSelected(){
   return selected;
 }
 
+function updateTag(){
+  currentTag = tagArray[currentIndex].tag
+  tagHtml = `<a target="_blank" href="https://www.google.com/search?q=${currentTag}">${currentTag} </a>`
+  $('#tagLarge').html(tagHtml)
+  $('#calculatedTagName').html(tagHtml)
+}
+
+function showSurveyPage(){
+  //$('.intro-view').empty()
+  $('.intro-view').hide()
+  $('#selectedBooks').show()
+  $('#selectedBooks .jumbotron').show()
+  $('#totalPagination').html(Math.ceil(NUMBER_OF_RESPONSES/selectedBooks.length))
+  $('#currentPagination').html(currentIndex + 1)
+  updateTag()
+  $('.form-wrapper').empty()
+  $.each(selectedBooks, function(i) {
+    $('.form-wrapper').append(`<h3> <a target="_blank" href="${selectedBooks[i]["url"]}">${selectedBooks[i]["title"]} </a> </h3>
+       <div class='form-group'>
+         <label class='radio-inline'>
+           <input type='radio' name='${selectedBooks[i]["id"]}' value='1' required>1 (not at all)
+         </label>
+         <label class='radio-inline'>
+           <input type='radio' name='${selectedBooks[i]["id"]}' value='2'>2
+         </label>
+         <label class='radio-inline'>
+           <input type='radio' name='${selectedBooks[i]["id"]}' value='3'>3
+         </label>
+         <label class='radio-inline'>
+           <input type='radio' name='${selectedBooks[i]["id"]}' value='4'>4
+         </label>
+         <label class='radio-inline'>
+           <input type='radio' name='${selectedBooks[i]["id"]}' value='5'>5 (very strongly)
+         </label>
+         <label class='radio-inline'>
+           <input type='radio' name='${selectedBooks[i]["id"]}' value='-1' checked><b>Not sure</b>
+         </label>
+       </div>`)
+  })
+}
+
 $('.selected-view').on('click', '.show-form', function() {
   if (selectedBooks.length < 1) {
     $.ajax({
@@ -259,42 +308,51 @@ $('.selected-view').on('click', '.show-form', function() {
     },
     success: function(data) {
       tagArray = data.result
-      $('.intro-view').empty()
-      $('#selectedBooks').show()
-      $('#selectedBooks .jumbotron').show()
-      $('#totalPagination').html(Math.ceil(NUMBER_OF_RESPONSES/selectedBooks.length))
-      $('#currentPagination').html(currentIndex + 1)
-      $('#submitFirstForm').show()
-      $('#tag_large').html(`<a target="_blank" href="https://www.google.com/search?q=${tagArray[currentIndex].tag}">${tagArray[currentIndex].tag} </a>`)
-      $('#calculatedTagName').html(`<a target="_blank" href="https://www.google.com/search?q=${tagArray[currentIndex].tag}">${tagArray[currentIndex].tag} </a>`)
-      $.each(selectedBooks, function(i) {
-        $('.form-wrapper').append(`<h3> <a target="_blank" href="${selectedBooks[i]["url"]}">${selectedBooks[i]["title"]} </a> </h3>
-           <div class='form-group'>
-             <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]["id"]}' value='1' required>1 (not at all)
-             </label>
-             <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]["id"]}' value='2'>2
-             </label>
-             <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]["id"]}' value='3'>3
-             </label>
-             <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]["id"]}' value='4'>4
-             </label>
-             <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]["id"]}' value='5'>5 (very strongly)
-             </label>
-             <label class='radio-inline'>
-               <input type='radio' name='${selectedBooks[i]["id"]}' value='-1' checked><b>Not sure</b>
-             </label>
-           </div>`)
-      })
+      currentIndex = 0
+      showSurveyPage()
     }
   })
 })
 
+function getAnswerByKey(array, key){
+  result = null
+  array.forEach(element => {
+    if(element["name"] == key) {
+      result = element;
+    }
+  })
+  return result["value"]
+}
+
+[{id:"-10", title: "Fight Club by Chuck Palahniuk", url:"https://www.goodreads.com/book/show/36236124-fight-club"},
+    {id:"-11", title: "Harry Potter and the Sorcerer's Stone by J.K. Rowling", url:"https://www.goodreads.com/book/show/3.Harry_Potter_and_the_Sorcerer_s_Stone"},
+    {id:"-12", title: "Alice's Adventures in Wonderland / Through the Looking-Glass by Lewis Carroll", url:"https://www.goodreads.com/book/show/24213.Alice_s_Adventures_in_Wonderland_Through_the_Looking_Glass"}]
+
 $('#submitForm').click(function() {
+  if(trapState) {
+    answers = $('form#tagRangeForm').serializeArray()
+    fightAns = getAnswerByKey(answers, "-10")
+    harryAns = getAnswerByKey(answers, "-11")
+    aliceAns = getAnswerByKey(answers, "-12")
+    if(fightAns > 3 || harryAns == 2 || harryAns == 1 || aliceAns == 2 || aliceAns == 1) {
+      $.ajax({
+      url: 'trap',
+      type: 'post',
+      data: $('form#tagRangeForm').serialize() + "&tag_id=" + tagArray[currentIndex]["tag_id"] + "&uid=" + UID + "&turkId=" + turkId
+    })
+      alert("Your answer is incorrect. You are not suitable for this survey. Your Turk ID is banned. If you take this survey again, we will reject your answers.")
+      return false;
+    }
+    trapState = false
+    $('#selectedBooks').hide()
+    $('#selectedBooks .jumbotron').hide()
+    $('.intro-view').show()
+    $('.search-book-row').show()
+    selectedBooks = []
+    tagArray = []
+    return false;
+  }
+  trapState = false
   if ($('#tagRangeForm')[0].checkValidity()) {
     $.ajax({
       url: 'submitSurvey',
@@ -312,7 +370,7 @@ $('#submitForm').click(function() {
           }
           // change the pagination and tag
           $('#currentPagination').html(currentIndex + 1)
-          $('#calculatedTagName').html(`<a target="_blank" href="https://www.google.com/search?q=${tagArray[currentIndex].tag}">${tagArray[currentIndex].tag} </a>`)
+          updateTag()
           // reset the form
           $('#tagRangeForm').trigger("reset")
           $("html, body").animate({ scrollTop: 0 }, "slow");
