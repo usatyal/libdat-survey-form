@@ -244,8 +244,18 @@ function showSurveyPage(){
   $('.intro-view').hide()
   $('#selectedBooks').show()
   $('#selectedBooks .jumbotron').show()
-  $('#totalPagination').html(Math.ceil(NUMBER_OF_RESPONSES/selectedBooks.length))
-  $('#currentPagination').html(currentIndex + 1)
+  checked = ""
+  if(trapState) {
+    checked = ""
+    $('#surveyPages').hide()
+    $('#comment').hide()
+  }else {
+    checked = "checked"
+    $('#surveyPages').show()
+    $('#totalPagination').html(Math.ceil(NUMBER_OF_RESPONSES / selectedBooks.length))
+    $('#currentPagination').html(currentIndex + 1)
+    $('#comment').show()
+  }
   updateTag()
   $('.form-wrapper').empty()
   $.each(selectedBooks, function(i) {
@@ -267,9 +277,9 @@ function showSurveyPage(){
            <input type='radio' name='${selectedBooks[i]["id"]}' value='5'>5 (very strongly)
          </label>
          <label class='radio-inline'>
-           <input type='radio' name='${selectedBooks[i]["id"]}' value='-1' checked><b>Not sure</b>
+           <input type='radio' name='${selectedBooks[i]["id"]}' value='-1' ${checked}><b>Not sure</b>
          </label>
-       </div>`)
+       </div>`);
   })
 }
 
@@ -321,25 +331,28 @@ function getAnswerByKey(array, key){
       result = element;
     }
   })
+  if(result == null) {
+    return null
+  }
   return result["value"]
 }
 
-[{id:"-10", title: "Fight Club by Chuck Palahniuk", url:"https://www.goodreads.com/book/show/36236124-fight-club"},
-    {id:"-11", title: "Harry Potter and the Sorcerer's Stone by J.K. Rowling", url:"https://www.goodreads.com/book/show/3.Harry_Potter_and_the_Sorcerer_s_Stone"},
-    {id:"-12", title: "Alice's Adventures in Wonderland / Through the Looking-Glass by Lewis Carroll", url:"https://www.goodreads.com/book/show/24213.Alice_s_Adventures_in_Wonderland_Through_the_Looking_Glass"}]
-
 $('#submitForm').click(function() {
   if(trapState) {
+    if (!$('#tagRangeForm')[0].checkValidity()) {
+      showValidationError()
+      return false
+    }
     answers = $('form#tagRangeForm').serializeArray()
     fightAns = getAnswerByKey(answers, "-10")
     harryAns = getAnswerByKey(answers, "-11")
     aliceAns = getAnswerByKey(answers, "-12")
     if(fightAns > 3 || harryAns == 2 || harryAns == 1 || aliceAns == 2 || aliceAns == 1) {
       $.ajax({
-      url: 'trap',
-      type: 'post',
-      data: $('form#tagRangeForm').serialize() + "&tag_id=" + tagArray[currentIndex]["tag_id"] + "&uid=" + UID + "&turkId=" + turkId
-    })
+        url: 'trap',
+        type: 'post',
+        data: $('form#tagRangeForm').serialize() + "&tag_id=" + tagArray[currentIndex]["tag_id"] + "&uid=" + UID + "&turkId=" + turkId
+      })
       alert("Your answer is incorrect. You are not suitable for this survey. Your Turk ID is banned. If you take this survey again, we will reject your answers.")
       return false;
     }

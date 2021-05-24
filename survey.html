@@ -84,7 +84,7 @@
    <div class="row">
      <div id="selectedBooks" class="col-md-offset-2 col-md-8" style="display: none;">
       <div class="jumbotron">
-      <h2>Page <span id="currentPagination"></span> of <span id="totalPagination"></span></h2>
+      <h2 id="surveyPages">Page <span id="currentPagination"></span> of <span id="totalPagination"></span></h2>
       <h3>
         On a scale of 1-5, how strongly does the tag
         <span id="calculatedTagName" style="font-weight: bold; font-style: italic;"></span> 
@@ -99,9 +99,11 @@
             <div class="form-wrapper">
               <!-- Form genereted from js -->
             </div>
-            <label> Please share any additional thoughts or let us know if there is anything wrong with the survey (optional): </label>
-            <br>
-            <textarea rows='4' cols='50' name='comment' maxlength="255"></textarea>
+              <div id="comment">
+                <label> Please share any additional thoughts or let us know if there is anything wrong with the survey (optional): </label>
+                <br>
+                <textarea rows='4' cols='50' name='comment' maxlength="255"></textarea>
+              </div>
           </div>
           <button type="submit" id="submitForm" class="btn btn-primary">Submit & Next</button>
         </form>
