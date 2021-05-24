@@ -149,6 +149,12 @@ $('#inputBookName').on('keypress', function(e) {
         displayedBooks = data.resultBookList
         
         updateBooks()
+
+        if(displayedBooks.length == 0) {
+          $('#nothing').show()
+        }else{
+          $('#nothing').hide()
+        }
         
         $('#submitSelectedBooks').show()
         $('#noBook').show()
@@ -278,7 +284,7 @@ function showSurveyPage(){
   $('.form-wrapper').empty()
   $.each(selectedBooks, function(i) {
     $('.form-wrapper').append(`<h3> <a target="_blank" href="${selectedBooks[i]["url"]}">${selectedBooks[i]["title"]} </a> </h3>
-       <div class='form-group'>
+       <div class='form-group' style="font-size: large">
          <label class='radio-inline'>
            <input type='radio' name='${selectedBooks[i]["id"]}' value='1' required>1 (not at all)
          </label>
