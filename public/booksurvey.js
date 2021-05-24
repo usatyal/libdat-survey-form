@@ -1,8 +1,18 @@
+// booksurvey.js
 NUMBER_OF_BOOKS = 10
 NUMBER_OF_RESPONSES = 30
 NUMBER_OF_ITEMS_IN_FIRST_FOLD = 5
 FAKE_BOOK = {id:"-1", title: "Night Nocturne by Kate Preston", url:"https://www.google.com/search?q=Night+Nocturne+by+Kate+Preston"}
 MIN_CHARS_FOR_SEARCH = 3
+
+let selectedBooks = []
+let tagArray = []
+let currentIndex = 0
+let displayedBooks = []
+let turkId = ''
+let UID = 0
+let RECS = []
+let trapState = true
 
 $.ajaxSetup({
   beforeSend:function(){
@@ -21,7 +31,12 @@ function showPagination (num, searchKey) {
   return
  } else {
   for (i = 1; i <= num; i++) {
-    $('#pagination').append(`<li class='page-item'><a class='page-link' data-search='${searchKey}' data-pagenum='${i}'>${i}</a></li>`)
+    // first page active by default
+    if (i === 1) {
+      $('#pagination').append(`<li class='page-item active'><a class='page-link' data-search='${searchKey}' data-pagenum='${i}'>${i}</a></li>`)
+    } else {
+      $('#pagination').append(`<li class='page-item'><a class='page-link' data-search='${searchKey}' data-pagenum='${i}'>${i}</a></li>`)
+    }
   }
  }
 }
@@ -59,15 +74,6 @@ function updateBooks() {
     $('#books').append(getSearchBookHtml(displayedBooks[i], isBookSelected(displayedBooks[i])))
   })
 }
-
-let selectedBooks = []
-let tagArray = []
-let currentIndex = 0
-let displayedBooks = []
-let turkId = ''
-let UID = 0
-let RECS = []
-let trapState = true
 
 $('.remainingNum').html(NUMBER_OF_BOOKS)
 
@@ -159,6 +165,7 @@ $('#inputBookName').on('keypress', function(e) {
 
 // search from pagination
 $('#pagination').on('click', '.page-link', function() {
+  var currentLi = $(this).parent('li')
   $.ajax({
     url: 'searchFromPagination',
     type: 'post',
@@ -170,7 +177,12 @@ $('#pagination').on('click', '.page-link', function() {
      if($('#books .checkbox').length) {
       $('#books .checkbox').remove()
      }
+     
      updateBooks()
+
+     // remove active class from other pagination and add to the current
+     $('ul li.page-item').removeClass('active')
+     currentLi.addClass('active')
     } 
   })
 })
@@ -369,7 +381,7 @@ $('#submitForm').click(function() {
     $('.search-book-row').show()
     selectedBooks = []
     tagArray = []
-    return false;
+    return false
   }
   trapState = false
   if ($('#tagRangeForm')[0].checkValidity()) {
@@ -400,5 +412,5 @@ $('#submitForm').click(function() {
     showValidationError()
   }
   // so that form does not reload on submit
-  return false;
+  return false
 })
