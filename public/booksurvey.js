@@ -2,6 +2,7 @@ NUMBER_OF_BOOKS = 10
 NUMBER_OF_RESPONSES = 30
 NUMBER_OF_ITEMS_IN_FIRST_FOLD = 5
 FAKE_BOOK = {id:"-1", title: "Night Nocturne by Kate Preston", url:"https://www.google.com/search?q=Night+Nocturne+by+Kate+Preston"}
+MIN_CHARS_FOR_SEARCH = 3
 
 $.ajaxSetup({
   beforeSend:function(){
@@ -114,15 +115,20 @@ $('#inputBookName').on('keypress', function(e) {
   if (e.which == 13) {
     if (!$('form#searchTermForm')[0].checkValidity()) {
       showValidationError()
-      return
+      return false
     }
 
     var searchKey = $('#inputBookName').val()
+
+    if (searchKey.length < MIN_CHARS_FOR_SEARCH) {
+      alert('Minimum character limit for search functionality is ' + MIN_CHARS_FOR_SEARCH + '')
+      return false
+    }
     e.preventDefault()
     // to prevent multiple ajax request
     var that = $(this);
     if (that.data('requestRunning')){
-      return;
+      return
     }
     
     that.data('requestRunning', true);
