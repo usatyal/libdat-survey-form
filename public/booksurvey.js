@@ -86,7 +86,7 @@ $('#submitTurkId').on('click', function(e) {
         RECS = data.recs
         RECS.forEach(book => {
           $('#recs').append(getSearchBookHtml(book))
-          console.log(book)
+          displayedBooksWithRecs.push(book)
         })
       }
     })
@@ -121,6 +121,9 @@ $('#inputBookName').on('keypress', function(e) {
         $('#recs_block').show()
         displayedBooks = data.resultBookList
 
+        // to address recs
+        displayedBooksWithRecs = displayedBooks.concat(displayedBooksWithRecs)
+        
         displayBooks()
         
         $('#submitSelectedBooks').show()
@@ -156,7 +159,7 @@ $('#pagination').on('click', '.page-link', function() {
 
 function getBookById(id) {
   book = {}
-  displayedBooks.forEach(element => {
+  displayedBooksWithRecs.forEach(element => {
     if(element["id"] === id) {
       book = element
       return;
