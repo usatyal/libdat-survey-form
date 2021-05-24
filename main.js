@@ -59,16 +59,28 @@ app.post('/login', function(req,res){
 	})
 })
 
-// the user selects no books
-app.post('/noBooks', function(req,res){
-  const obj = req.body
+function banUser(no_books, fake, wrong, obj){
   const query = 'INSERT INTO exclusion (turkid, uid, no_books, fake, wrong) VALUES (?,?,?,?,?)'
 
-  con.query(query, [obj.turkId, obj.uid, true, false, false], function (err, result) {
+  con.query(query, [obj.turkId, obj.uid, no_books, fake, wrong], function (err, result) {
     if (err) {
       console.log(err)
     }
 	})
+}
+
+// the user selects a fake book
+app.post('/fakeBooks', function(req,res){
+  const obj = req.body
+  banUser(false, true, false, obj)
+  res.send()
+})
+
+// the user selects no books
+app.post('/noBooks', function(req,res){
+  const obj = req.body
+  banUser(true, false, false, obj)
+  res.send()
 })
 
 // survery book search

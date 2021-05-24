@@ -1,6 +1,7 @@
 NUMBER_OF_BOOKS = 10
 NUMBER_OF_RESPONSES = 30
 NUMBER_OF_ITEMS_IN_FIRST_FOLD = 5
+FAKE_BOOK = {id:"-1", title: "Night Nocturne by Kate Preston", url:"https://www.google.com/search?q=Night+Nocturne+by+Kate+Preston"}
 
 $.ajaxSetup({
   beforeSend:function(){
@@ -91,6 +92,8 @@ $('#submitTurkId').on('click', function(e) {
       success: function(data) {
         UID = data.uid
         RECS = data.recs
+        //adding the fake book
+        RECS.splice(1, 0, FAKE_BOOK)
         updateRecs()
       }
     })
@@ -211,6 +214,16 @@ $('#books, #recs').on('click', 'input[name="bookNames"]', function() {
   updateBooks()
 })
 
+function isFakeBookSelected(){
+  selected = false
+  selectedBooks.forEach(book => {
+    if(book["id"] === "-1") {
+      selected = true
+    }
+  })
+  return selected;
+}
+
 $('.selected-view').on('click', '.show-form', function() {
   if (selectedBooks.length < 1) {
     $.ajax({
@@ -222,6 +235,18 @@ $('.selected-view').on('click', '.show-form', function() {
       }
     })
     alert ('Sorry, you cannot take this survey. Your Turk ID is banned. If you take this survey again, we will reject your answers.')
+    return false
+  }
+  if(isFakeBookSelected()){
+    $.ajax({
+      url: 'fakeBooks',
+      type: 'post',
+      data: {
+        turkId: turkId,
+        uid: UID
+      },success: function(data) {}
+    })
+    alert ('You selected a fake book. Your Turk ID is banned. If you take this survey again, we will reject your answers.')
     return false
   }
 
