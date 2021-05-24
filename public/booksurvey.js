@@ -51,9 +51,10 @@ function getSearchBookHtml(book, checked){
         </div>`
 }
 
-function displayBooks () {
+function updateBooks() {
+  $('#books').empty()
   $.each(displayedBooks, function(i) {
-    $('#books').prepend(getSearchBookHtml(displayedBooks[i], isBookSelected(displayedBooks[i])))
+    $('#books').append(getSearchBookHtml(displayedBooks[i], isBookSelected(displayedBooks[i])))
   })
 }
 
@@ -64,9 +65,15 @@ let displayedBooks = []
 let turkId = ''
 let UID = 0
 let RECS = []
-let displayedBooksWithRecs = []
 
 $('.remainingNum').html(NUMBER_OF_BOOKS)
+
+function updateRecs(){
+  $('#recs').empty()
+  RECS.forEach(book => {
+    $('#recs').append(getSearchBookHtml(book, isBookSelected(book)))
+  })
+}
 
 $('#submitTurkId').on('click', function(e) {
   if (!$('form#turkForm')[0].checkValidity()) {
@@ -84,10 +91,7 @@ $('#submitTurkId').on('click', function(e) {
       success: function(data) {
         UID = data.uid
         RECS = data.recs
-        RECS.forEach(book => {
-          $('#recs').append(getSearchBookHtml(book))
-          displayedBooksWithRecs.push(book)
-        })
+        updateRecs()
       }
     })
 
@@ -120,11 +124,8 @@ $('#inputBookName').on('keypress', function(e) {
       success: function(data) {
         $('#recs_block').show()
         displayedBooks = data.resultBookList
-
-        // to address recs
-        displayedBooksWithRecs = displayedBooks.concat(displayedBooksWithRecs)
         
-        displayBooks()
+        updateBooks()
         
         $('#submitSelectedBooks').show()
         $('#noBook').show()
@@ -147,33 +148,40 @@ $('#pagination').on('click', '.page-link', function() {
     data: 'searchKey=' + $(this).data('search') + '&pageNum=' + $(this).data('pagenum'),
     success: function (data) {
      displayedBooks = data.resultBookList
-     displayedBooksWithRecs = displayedBooksWithRecs.concat(displayedBooks)
      // display new set of books based on pagination and searchKey
      // remove if exists
      if($('#books .checkbox').length) {
       $('#books .checkbox').remove()
      }
-     displayBooks()
+     updateBooks()
     } 
   })
 })
 
 function getBookById(id) {
-  book = {}
-  displayedBooksWithRecs.forEach(element => {
+  book = getBookByIdFromList(id, displayedBooks)
+  if(book === null) {
+    book = getBookByIdFromList(id, RECS)
+  }
+  return book;
+}
+
+function getBookByIdFromList(id, list) {
+  book = null
+  list.forEach(element => {
     if(element["id"] === id) {
       book = element
       return;
     }
   })
-  return book;
+  return book
 }
 
 function updateSelectedBooks(){
   $('ul.selected-books').empty()
-    $.each(selectedBooks, function(i) {
-      $('ul.selected-books').append(`<li> <a target="_blank" href="${selectedBooks[i]["url"]}">${selectedBooks[i]["title"]}</a></li>`)
-    })
+  $.each(selectedBooks, function(i) {
+    $('ul.selected-books').append(`<li> <a target="_blank" href="${selectedBooks[i]["url"]}">${selectedBooks[i]["title"]}</a></li>`)
+  })
 }
 
 $('#books, #recs').on('click', 'input[name="bookNames"]', function() {
@@ -199,6 +207,8 @@ $('#books, #recs').on('click', 'input[name="bookNames"]', function() {
     $('.remainingNum').html(NUMBER_OF_BOOKS - selectedBooks.length)
     updateSelectedBooks()
   }
+  updateRecs()
+  updateBooks()
 })
 
 $('.selected-view').on('click', '.show-form', function() {
