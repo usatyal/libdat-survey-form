@@ -147,6 +147,7 @@ $('#pagination').on('click', '.page-link', function() {
     data: 'searchKey=' + $(this).data('search') + '&pageNum=' + $(this).data('pagenum'),
     success: function (data) {
      displayedBooks = data.resultBookList
+     displayedBooksWithRecs = displayedBooksWithRecs.concat(displayedBooks)
      // display new set of books based on pagination and searchKey
      // remove if exists
      if($('#books .checkbox').length) {
@@ -175,7 +176,6 @@ function updateSelectedBooks(){
     })
 }
 
-//TODO: modify getBookById() to accept the recs as well
 $('#books, #recs').on('click', 'input[name="bookNames"]', function() {
   if (this.checked === true) {
     if (selectedBooks.length === NUMBER_OF_BOOKS) {
