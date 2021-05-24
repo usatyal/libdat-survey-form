@@ -138,12 +138,17 @@ app.post('/searchFromPagination', function(req, res) {
   const obj = req.body
   const searchTerm = obj.searchKey
   const pageNum = obj.pageNum
-  const query = 'select id, title, url from book where REGEXP_LIKE(title, N?) order by pop desc;'
-  con.query(query, ['\\b'+searchTerm+'\\b'], function (err, result) {
+  const query = 'select id, title, url from book where REGEXP_LIKE(title, N?) order by pop desc limit ? offset ?;'
+  con.query(query, ['\\b'+searchTerm+'\\b', NUMBER_OF_ITEMS_IN_FIRST_FOLD, (pageNum - 1)*NUMBER_OF_ITEMS_IN_FIRST_FOLD], function (err, result) {
+    if (!err) {
+      res.send({resultBookList: result})
+    }
+  }
+  /*con.query(query, ['\\b'+searchTerm+'\\b'], function (err, result) {
     if (!err) {
       res.send({resultBookList: result.slice((pageNum-1)*NUMBER_OF_ITEMS_IN_FIRST_FOLD, pageNum*NUMBER_OF_ITEMS_IN_FIRST_FOLD)})
     }
-  })
+  }*/)
 })
 
 // calculates the tag for selected books
