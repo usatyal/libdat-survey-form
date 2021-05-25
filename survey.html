@@ -32,6 +32,12 @@
       padding: 5px;
       background: #e9ecef;
     }
+    .message {
+      font-size: large;
+      border: 1px solid black;
+      padding: 5px;
+      background: #e9ecef;
+    }
   </style>
 </head>
 <body>
@@ -43,7 +49,8 @@
            <div class="col-md-6">
              <form id="turkForm">
               <div class="form-group">
-                  <p>By entering this survey, you agree that your data will be stored, processed and shared publicly.</p>
+                  <div class="message">In this survey, we will ask you to select books that you have read and answer around <span id="question_number"></span> multiple choice questions about those books.
+                      By entering this survey, you agree that your data will be used for research purposes.</div>
                 <input type="text" class="form-control" id="turkId" maxlength="100" name="turkId" placeholder="Please enter your amazon turk id and press next" required>
                 <br>
                 <button id="submitTurkId" class="btn btn-primary">Next</button>
@@ -74,7 +81,7 @@
             </div>
           </div>
           <div class="col-md-6 selected-view" id="submitSelectedBooks">
-           <h3>You have selected <span class="selectedNum">0</span> books, please select <span class="remainingNum"></span> books </h3>
+           <h3>You have selected <span class="selectedNum">0</span> books, please select <span class="remainingNum"></span> more books </h3>
            <ul class="selected-books">
            </ul>
            <button class="btn btn-primary show-form">I cannot find any books I read</button>
@@ -86,22 +93,24 @@
      <div id="selectedBooks" class="col-md-offset-2 col-md-8" style="display: none;">
       <div class="jumbotron">
       <h2 id="surveyPages">Page <span id="currentPagination"></span> of <span id="totalPagination"></span></h2>
-      <h3>
-        On a scale between 1 and 5, how strongly does the tag
-        <span id="calculatedTagName" style="font-weight: bold; font-style: italic;"></span> 
-        apply to these books?
-      </h3>
+          <h3 id="tutorial">This is a tutorial page. Please indicate the degree, with which a tag applies to books.
+              Feel free to use the “not sure” option, when you are not sure about your answer.</h3>
+          <h3>
+            On a scale of 1 to 5, how strongly does the tag
+            <span id="calculatedTagName" style="font-weight: bold; font-style: italic;"></span>
+            apply to these books?
+          </h3>
       </div>
-         <h2 align="center">Tag: <span id="tagLarge"></span></h2>
       <!-- When you click this button, trigger the submit event on this form. -->
-      <p class="message" style="display: none;">Thank you for taking part in this survey. Your code for amazon turk is:<b> <span class="randomcode"></span></b>. You have already provided enough information. However, we will appreciate if you continue answering questions. Your answers will help us build better software.</p>
+        <div id="finish" class="message" style="display: none;">Thank you for taking part in this survey. Your code for amazon turk is:<b> <span class="randomcode"></span></b>. You have already provided enough information. However, we will appreciate if you continue answering questions. Your answers will help us build better software.</div>
+         <h2 align="center">Tag: <span id="tagLarge"></span></h2>
         <form id="tagRangeForm">
           <div class="form-group">
             <div class="form-wrapper">
               <!-- Form genereted from js -->
             </div>
               <div id="comment">
-                <label style="font-weight: normal"> Please share any additional thoughts or let us know if there is anything wrong with the survey (optional): </label>
+                <label style="font-weight: normal"> (Optional) Please share any additional thoughts or let us know if there is anything wrong with the survey: </label>
                 <br>
                 <textarea rows='4' cols='50' name='comment' maxlength="255"></textarea>
               </div>

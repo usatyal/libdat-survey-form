@@ -1,8 +1,8 @@
 // booksurvey.js
 NUMBER_OF_BOOKS = 10
 NUMBER_OF_RESPONSES = 30
-NUMBER_OF_ITEMS_IN_FIRST_FOLD = 5
-FAKE_BOOK = {id:"-1", title: "Night Nocturne by Kate Preston", url:"https://www.google.com/search?q=Night+Nocturne+by+Kate+Preston"}
+NUMBER_OF_ITEMS_IN_FIRST_FOLD = 10
+FAKE_BOOK = {id:-1, title: "Night Nocturne by Kate Preston", url:"https://www.google.com/search?q=Night+Nocturne+by+Kate+Preston"}
 MIN_CHARS_FOR_SEARCH = 3
 
 let selectedBooks = []
@@ -13,6 +13,8 @@ let turkId = ''
 let UID = 0
 let RECS = []
 let trapState = true
+
+$('#question_number').html(NUMBER_OF_RESPONSES)
 
 $.ajaxSetup({
   beforeSend:function(){
@@ -108,9 +110,9 @@ $('#submitTurkId').on('click', function(e) {
 
   $('.turk-id-row').hide()
   //$('.search-book-row').show()
-  selectedBooks = [{id:"-10", title: "Fight Club by Chuck Palahniuk", url:"https://www.goodreads.com/book/show/36236124-fight-club"},
-    {id:"-11", title: "Harry Potter and the Sorcerer's Stone by J.K. Rowling", url:"https://www.goodreads.com/book/show/3.Harry_Potter_and_the_Sorcerer_s_Stone"},
-    {id:"-12", title: "Alice's Adventures in Wonderland / Through the Looking-Glass by Lewis Carroll", url:"https://www.goodreads.com/book/show/24213.Alice_s_Adventures_in_Wonderland_Through_the_Looking_Glass"}]
+  selectedBooks = [{id:-10, title: "Fight Club by Chuck Palahniuk", url:"https://www.goodreads.com/book/show/36236124-fight-club"},
+    {id:-11, title: "Harry Potter and the Sorcerer's Stone by J.K. Rowling", url:"https://www.goodreads.com/book/show/3.Harry_Potter_and_the_Sorcerer_s_Stone"},
+    {id:-12, title: "Alice's Adventures in Wonderland / Through the Looking-Glass by Lewis Carroll", url:"https://www.goodreads.com/book/show/24213.Alice_s_Adventures_in_Wonderland_Through_the_Looking_Glass"}]
   tagArray = [{"tag":"for kids", "id":-100}]
   currentIndex = 0
   trapState = true
@@ -194,6 +196,7 @@ $('#pagination').on('click', '.page-link', function() {
 })
 
 function getBookById(id) {
+  id = parseInt(id)
   book = getBookByIdFromList(id, displayedBooks)
   if(book === null) {
     book = getBookByIdFromList(id, RECS)
@@ -237,7 +240,7 @@ $('#books, #recs').on('click', 'input[name="bookNames"]', function() {
     updateSelectedBooks()
   } else {
     // remove item from array and regenerate the list
-    selectedBooks = selectedBooks.filter(item => item["id"] !== this.value)
+    selectedBooks = selectedBooks.filter(item => item["id"] !== parseInt(this.value))
     $('.selectedNum').html(selectedBooks.length)
     $('.remainingNum').html(NUMBER_OF_BOOKS - selectedBooks.length)
     updateSelectedBooks()
@@ -249,7 +252,7 @@ $('#books, #recs').on('click', 'input[name="bookNames"]', function() {
 function isFakeBookSelected(){
   selected = false
   selectedBooks.forEach(book => {
-    if(book["id"] === "-1") {
+    if(book["id"] === -1) {
       selected = true
     }
   })
@@ -273,9 +276,11 @@ function showSurveyPage(){
     checked = ""
     $('#surveyPages').hide()
     $('#comment').hide()
+    $('#tutorial').show()
   }else {
     checked = "checked"
     $('#surveyPages').show()
+    $('#tutorial').hide()
     $('#totalPagination').html(Math.ceil(NUMBER_OF_RESPONSES / selectedBooks.length))
     $('#currentPagination').html(currentIndex + 1)
     $('#comment').show()
@@ -401,7 +406,7 @@ $('#submitForm').click(function() {
           let messageIndex = Math.ceil(NUMBER_OF_RESPONSES/selectedBooks.length)
           if (currentIndex + 1 > messageIndex) {
             // show message hide pagination
-            $('.message').show()
+            $('#finish').show()
             $('.jumbotron h2').hide()
             $('.randomcode').html(UID + turkId)
           }

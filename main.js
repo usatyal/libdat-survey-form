@@ -1,5 +1,5 @@
 // app.js
-NUMBER_OF_ITEMS_IN_FIRST_FOLD = 5
+NUMBER_OF_ITEMS_IN_FIRST_FOLD = 10
 
 require('dotenv').config()
 let express = require('express')
