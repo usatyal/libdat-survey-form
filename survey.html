@@ -62,7 +62,7 @@
           <div class="col-md-6">
             <form id="searchTermForm">
               <div class="form-group">
-                <label for="inputBookName">Search a book with: </label>
+                  <label for="inputBookName">Search a book that <u>you have read</u> with: </label>
                 <input type="text" class="form-control" id="inputBookName" name="searchTerm"  placeholder="Search....." required>
               </div>
             </form>
@@ -81,9 +81,9 @@
             </div>
           </div>
           <div class="col-md-6 selected-view" id="submitSelectedBooks">
-           <h3>You have selected <span class="selectedNum">0</span> books, please select <span class="remainingNum"></span> more books </h3>
-           <ul class="selected-books">
-           </ul>
+              <h4>Please select books that <u>you have read</u></h4>
+              <h4>You have selected <span class="selectedNum">0</span> books, please select <span class="remainingNum"></span> more books </h4>
+              <ul class="selected-books"></ul>
            <button class="btn btn-primary show-form">I cannot find any books I read</button>
          </div>	
        </div>
@@ -93,8 +93,8 @@
      <div id="selectedBooks" class="col-md-offset-2 col-md-8" style="display: none;">
       <div class="jumbotron">
       <h2 id="surveyPages">Page <span id="currentPagination"></span> of <span id="totalPagination"></span></h2>
-          <h3 id="tutorial">This is a tutorial page. Please indicate the degree, with which a tag applies to books.
-              Feel free to use the “not sure” option, when you are not sure about your answer.</h3>
+          <h3 id="tutorial">This is a tutorial page. Please indicate the degree to which a tag applies to each of the books in the list.
+              Feel free to use the “not sure” option when you are not sure about your answer. Please don't guess any answers!</h3>
           <h3>
             On a scale of 1 to 5, how strongly does the tag
             <span id="calculatedTagName" style="font-weight: bold; font-style: italic;"></span>
@@ -102,7 +102,7 @@
           </h3>
       </div>
       <!-- When you click this button, trigger the submit event on this form. -->
-        <div id="finish" class="message" style="display: none;">Thank you for taking part in this survey. Your code for amazon turk is:<b> <span class="randomcode"></span></b>. You have already provided enough information. However, we will appreciate if you continue answering questions. Your answers will help us build better software.</div>
+        <div id="finish" class="message" style="display: none;">Thank you for taking part in this survey. Your code for amazon turk is:<b> <span class="randomcode"></span></b>. You have already provided enough information. However, we will appreciate if you continue answering questions. Your answers will help us in our research.</div>
          <h2 align="center">Tag: <span id="tagLarge"></span></h2>
         <form id="tagRangeForm">
           <div class="form-group">
