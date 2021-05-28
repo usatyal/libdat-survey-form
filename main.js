@@ -96,6 +96,16 @@ app.post('/noBooks', function(req,res){
   res.send()
 })
 
+//let searchTermQuery = 'select id, title, url from book where REGEXP_LIKE(title, N?) order by pop desc'
+let searchTermQuery = 'select id, title, url from book where REGEXP_LIKE(title, N?)\n' +
+    'and id not in\n' +
+    '(select book_id from\n' +
+    '(select book_id, tag_id, count(score) as cnt from survey_response\n' +
+    'where score <> -1 and\n' +
+    'uid not in (select uid from user where turkid in (select turkid from exclusion))\n' +
+    'group by book_id, tag_id having cnt >= 5) as sr group by book_id having count(book_id) >= 2)\n' +
+    'order by pop desc'
+
 // survery book search
 app.post('/searchBookFromTerm', function(req, res){
   const obj = req.body
@@ -116,7 +126,7 @@ app.post('/searchBookFromTerm', function(req, res){
 
   insertSearchKey()
 
-  const query = 'select id, title, url from book where REGEXP_LIKE(title, N?) order by pop desc;'
+  const query = searchTermQuery + ";"
 
   con.query(query, ['\\b'+searchTerm+'\\b'], function (err, result) {
     if (!err) {
@@ -138,7 +148,7 @@ app.post('/searchFromPagination', function(req, res) {
   const obj = req.body
   const searchTerm = obj.searchKey
   const pageNum = obj.pageNum
-  const query = 'select id, title, url from book where REGEXP_LIKE(title, N?) order by pop desc limit ? offset ?;'
+  const query = searchTermQuery + ' limit ? offset ?;'
   con.query(query, ['\\b'+searchTerm+'\\b', NUMBER_OF_ITEMS_IN_FIRST_FOLD, (pageNum - 1)*NUMBER_OF_ITEMS_IN_FIRST_FOLD], function (err, result) {
     if (!err) {
       res.send({resultBookList: result})
@@ -157,9 +167,19 @@ app.post('/calculateTag', function(req, res) {
 	const bookArray = getBookIds(obj.selectedBooks)
     const uid = obj.uid
   // same query for calculating tag and inserting to the book_selection
-	const query = 'select tag, tag_id, abs(max(score) - min(score)) as absoluteDifference from score, tag where score.tag_id = tag.id and book_id in (?) group by tag_id order by absoluteDifference desc; INSERT INTO book_selection (uid, selection) VALUES (?, ?)'
-  
-  con.query(query, [bookArray, uid, bookArray.toString()], function (err, result) {
+	//const query = 'select tag, tag_id, abs(max(score) - min(score)) as absoluteDifference from score, tag where score.tag_id = tag.id and book_id in (?) group by tag_id order by absoluteDifference desc; INSERT INTO book_selection (uid, selection) VALUES (?, ?)'
+  const query = 'select score.tag_id, tag.tag, abs(max(score.score) - min(score.score)) as absoluteDifference, tag_count.tc as tag_cnt from score\n' +
+      'left outer join\n' +
+      '(select tag_id, count(tag_id) as tc from\n' +
+      '(select book_id, tag_id, count(score) as cnt from survey_response\n' +
+      'where score <> -1 and book_id in (?) and\n' +
+      'uid not in (select uid from user where turkid in (select turkid from exclusion))\n' +
+      'group by book_id, tag_id having cnt >= 5) sr group by tag_id) as tag_count\n' +
+      'on score.tag_id=tag_count.tag_id\n' +
+      'inner join tag on tag.id = score.tag_id\n' +
+      'where score.book_id in (?)\n' +
+      'group by tag_id order by tag_cnt, absoluteDifference desc; INSERT INTO book_selection (uid, selection) VALUES (?, ?)'
+  con.query(query, [bookArray, bookArray, uid, bookArray.toString()], function (err, result) {
     if (!err) {
      res.send({result: result[0]})
     }
