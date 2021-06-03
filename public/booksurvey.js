@@ -403,6 +403,9 @@ $('#submitForm').click(function() {
       success: function(data) {
         if (data.success === true) {
           currentIndex = currentIndex + 1
+          if(currentIndex >= tagArray.length) {
+            alert("You have provided your feedback on all the tags. Thank you for your effort!")
+          }
           let messageIndex = Math.ceil(NUMBER_OF_RESPONSES/selectedBooks.length)
           if (currentIndex + 1 > messageIndex) {
             // show message hide pagination
