@@ -62,7 +62,10 @@ function insertRecs(recs, uid){
 app.post('/login', function(req,res){
   const obj = req.body
   const query = 'INSERT INTO user (turkid) VALUES (?);' +
-      'select b.id, b.title, b.url, b.pop as pop, count(rs.book_id) as cnt from book b left join (select * from survey_response where score <> -1) rs on rs.book_id=b.id group by id order by cnt, pop limit 2;'
+      'select b.id, b.title, b.url, b.pop as pop, count(rs.book_id) as cnt from book b ' +
+      'left join (select * from survey_response where score <> -1 ' +
+      'and uid not in (select uid from user where turkid in (select turkid from exclusion))) rs on ' +
+      'rs.book_id=b.id group by id order by cnt asc, pop desc limit 2;'
 
   con.query(query, [obj.turkId], function (err, result) {
     if (!err) {
