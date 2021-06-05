@@ -314,15 +314,17 @@ function showSurveyPage(){
 
 $('.selected-view').on('click', '.show-form', function() {
   if (selectedBooks.length < 1) {
-    $.ajax({
-      url: 'noBooks',
-      type: 'post',
-      data: {
-        turkId: turkId,
-        uid: UID
-      }
-    })
-    alert ('Sorry, you cannot take this survey. Your Turk ID is banned. If you take this survey again, we will reject your answers.')
+    if(confirm("Are you sure that you searched well enough and want to continue?")){
+      $.ajax({
+        url: 'noBooks',
+        type: 'post',
+        data: {
+          turkId: turkId,
+          uid: UID
+        }
+      })
+      alert ('Sorry, you cannot take this survey. Your Turk ID is banned. If you take this survey again, we will reject your answers.')
+    }
     return false
   }
   if(isFakeBookSelected()){
