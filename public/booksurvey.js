@@ -226,6 +226,7 @@ $('#books, #recs').on('click', 'input[name="bookNames"]', function() {
   if (this.checked === true) {
     if (selectedBooks.length === NUMBER_OF_BOOKS) {
       alert(`You have already selected ${NUMBER_OF_BOOKS} books`)
+      $('#mainContainer').hide()
       return false
     }
     selectedBooks.push(getBookById(this.value))
@@ -324,6 +325,7 @@ $('.selected-view').on('click', '.show-form', function() {
         }
       })
       alert ('Sorry, you cannot take this survey. Your Turk ID is banned. If you take this survey again, we will reject your answers.')
+      $('#mainContainer').hide()
     }
     return false
   }
@@ -337,6 +339,7 @@ $('.selected-view').on('click', '.show-form', function() {
       },success: function(data) {}
     })
     alert ('You selected a fake book. Your Turk ID is banned. If you take this survey again, we will reject your answers.')
+    $('#mainContainer').hide()
     return false
   }
 
@@ -385,6 +388,7 @@ $('#submitForm').click(function() {
         data: $('form#tagRangeForm').serialize() + "&tag_id=" + tagArray[currentIndex]["tag_id"] + "&uid=" + UID + "&turkId=" + turkId
       })
       alert("Your answer is incorrect. You are not suitable for this survey. Your Turk ID is banned. If you take this survey again, we will reject your answers.")
+      $('#mainContainer').hide()
       return false;
     }
     trapState = false

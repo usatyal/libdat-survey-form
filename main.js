@@ -106,7 +106,7 @@ let searchTermQuery = 'select id, title, url from book where REGEXP_LIKE(title, 
     '(select book_id, tag_id, count(score) as cnt from survey_response\n' +
     'where score <> -1 and\n' +
     'uid not in (select uid from user where turkid in (select turkid from exclusion))\n' +
-    'group by book_id, tag_id having cnt >= 5) as sr group by book_id having count(book_id) >= 2)\n' +
+    'group by book_id, tag_id having cnt >= 5) as sr group by book_id having count(book_id) >= 3)\n' +
     'order by pop desc'
 
 // survery book search
